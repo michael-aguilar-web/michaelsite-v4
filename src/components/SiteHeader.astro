@@ -1,0 +1,12 @@
+---
+import { showWikiInNavigation } from '../lib/site';
+const { activeSection = '' } = Astro.props;
+---
+<header class="site-header page-width-wide">
+  <a class="site-name" href="/">michael<span class="name-accent">b</span>aguilar<span class="name-dot">.</span></a>
+  <nav aria-label="Main navigation">
+    <a href="/" aria-current={activeSection === 'home' ? 'page' : undefined}>Home</a>
+    <a href="/gallery/" aria-current={activeSection === 'gallery' ? 'page' : undefined}>Gallery</a>
+    {(showWikiInNavigation || activeSection === 'wiki') && <a href="/wiki/" aria-current={activeSection === 'wiki' ? 'page' : undefined}>Wiki</a>}
+  </nav>
+</header>

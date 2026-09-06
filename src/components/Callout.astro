@@ -1,0 +1,24 @@
+---
+interface Props {
+  type?: 'note' | 'tip' | 'warning' | 'caution' | 'important' | 'info' | 'success';
+  title?: string;
+}
+
+const { type = 'note', title = type } = Astro.props;
+---
+
+<aside class="callout" data-callout={type}>
+  <div class="callout-title">
+    <svg class="callout-icon" aria-hidden="true" viewBox="0 0 24 24">
+      {type === 'note' && <><path d="m4 20 4.25-1 10.5-10.5-3.25-3.25L5 15.75 4 20Z" /><path d="m13.75 7 3.25 3.25" /></>}
+      {type === 'tip' && <><path d="M9 18h6M10 21h4" /><path d="M8.2 14.8A7 7 0 1 1 15.8 14.8c-.9.65-1.3 1.4-1.3 2.2h-5c0-.8-.4-1.55-1.3-2.2Z" /></>}
+      {type === 'warning' && <><path d="M12 3 2.75 20h18.5L12 3Z" /><path d="M12 9v5M12 17.25v.05" /></>}
+      {type === 'caution' && <><path d="m8 2.75-5.25 5.25v8L8 21.25h8L21.25 16V8L16 2.75H8Z" /><path d="M12 7.5v6M12 17v.05" /></>}
+      {type === 'important' && <path d="m12 2.75 2.8 5.67 6.25.91-4.52 4.4 1.07 6.22L12 17l-5.6 2.95 1.07-6.22-4.52-4.4 6.25-.91L12 2.75Z" />}
+      {type === 'info' && <><circle cx="12" cy="12" r="9" /><path d="M12 10.5V17M12 7.25v.05" /></>}
+      {type === 'success' && <><circle cx="12" cy="12" r="9" /><path d="m7.75 12.25 2.75 2.75 5.75-6" /></>}
+    </svg>
+    <span>{title}</span>
+  </div>
+  <div class="callout-content"><slot /></div>
+</aside>

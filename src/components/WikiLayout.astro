@@ -1,0 +1,36 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../layouts/PageLayout.astro';
+import WikiTree from './WikiTree.astro';
+import { buildWikiTree } from '../lib/wiki';
+import '../styles/content.css';
+import '../styles/wiki.css';
+interface Props { title: string; description?: string; activeId?: string; }
+const { title, description = title, activeId = '' } = Astro.props;
+const nodes = buildWikiTree(await getCollection('wiki'));
+---
+<PageLayout title={title} description={description} section="wiki" pageClass="wiki-page">
+  <div class="wiki-shell page-width-wide">
+    <aside class="wiki-sidebar" aria-label="Wiki navigation">
+      <details class="wiki-navigation" open>
+        <summary>Browse wiki</summary>
+        <nav class="wiki-tree" aria-label="Wiki pages">
+          <a class:list={['wiki-tree-link', 'wiki-tree-home', { active: !activeId }]} href="/wiki/" aria-current={!activeId ? 'page' : undefined}>
+            <svg class="wiki-home-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="m3 9 7-6 7 6M5 8.25v8.25h10V8.25M8.25 16.5v-5h3.5v5" /></svg>
+            <span>wiki</span>
+          </a>
+          <WikiTree nodes={nodes} activeId={activeId} />
+        </nav>
+      </details>
+    </aside>
+    <div class="wiki-main"><slot /></div>
+  </div>
+</PageLayout>
+<script>
+  const navigation = document.querySelector<HTMLDetailsElement>('.wiki-navigation');
+  const mobile = window.matchMedia('(max-width: 44rem)');
+  if (navigation) {
+    navigation.open = !mobile.matches;
+    mobile.addEventListener('change', (event) => { navigation.open = !event.matches; });
+  }
+</script>

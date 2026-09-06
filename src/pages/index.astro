@@ -1,0 +1,40 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import { showWikiInNavigation } from '../lib/site';
+const socials = [
+  { label: 'Email', href: 'mailto:michael.b.aguilar@gmail.com', icon: 'email' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/michaelbaguilar/', icon: 'linkedin' },
+  { label: 'YouTube', href: 'https://www.youtube.com/@michael_aguilar', icon: 'youtube' },
+  { label: 'FRC Instagram', href: 'https://www.instagram.com/michael_aguilar_frc', icon: 'instagram' },
+];
+---
+<PageLayout section="home" pageClass="home-page">
+  <section class="home-intro page-width">
+    <div class="home-copy">
+      <h1>Michael<br />Aguilar<span class="name-dot">.</span></h1>
+      <a class="gallery-link" href="/gallery/">Gallery <span aria-hidden="true">↗</span></a>
+      <div class="social-links" aria-label="Social links">
+        {socials.map((social) => <a href={social.href} target={social.href.startsWith('https') ? '_blank' : undefined} rel="noopener noreferrer"><img src={`/images/${social.icon}-60.png`} width="20" height="20" alt="" />{social.label}</a>)}
+      </div>
+      <a href="/wiki/" class="home-wiki-link" id="wiki-link" hidden={!showWikiInNavigation}>Wiki <span aria-hidden="true">↗</span></a>
+    </div>
+    <div class="portrait-frame">
+      <button class="portrait-button" type="button" aria-label="Michael Aguilar — hold to reveal wiki" aria-controls="wiki-link" aria-expanded={showWikiInNavigation}>
+        <img src="/images/s3_1white_cropped.png" width="600" height="600" alt="Michael Aguilar" fetchpriority="high" draggable="false" />
+      </button>
+    </div>
+  </section>
+</PageLayout>
+<script>
+  const portrait = document.querySelector<HTMLButtonElement>('.portrait-button');
+  const wiki = document.querySelector<HTMLAnchorElement>('#wiki-link');
+  if (portrait && wiki) {
+    let timer: ReturnType<typeof setTimeout>;
+    const reveal = () => { wiki.hidden = false; portrait.setAttribute('aria-expanded', 'true'); };
+    const cancel = () => clearTimeout(timer);
+    portrait.addEventListener('pointerdown', () => { cancel(); timer = setTimeout(reveal, 800); });
+    for (const event of ['pointerup', 'pointerleave', 'pointercancel']) portrait.addEventListener(event, cancel);
+    portrait.addEventListener('contextmenu', (event) => event.preventDefault());
+    portrait.addEventListener('click', (event) => { if (event.detail === 0) reveal(); });
+  }
+</script>

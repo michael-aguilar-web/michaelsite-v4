@@ -1,0 +1,16 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import gallery from '../../data/gallery.json';
+import '../../styles/gallery.css';
+---
+<PageLayout title="Gallery — Michael Aguilar" section="gallery">
+  <div class="gallery-page page-width-wide">
+    <h1 class="page-heading">Gallery<span class="name-dot">.</span></h1>
+    <div class="category-grid">
+      {gallery.map((category) => <a class="category-card" href={`/gallery/${category.id}/`}>
+        <div class="category-image"><img src={`/images/previews/${category.projects[0].images[0].split('/').at(-1)}`} alt={category.projects[0].title} width="960" height="720" loading="eager" /></div>
+        <div class="category-caption"><h2>{category.title}</h2><span aria-hidden="true">↗</span></div>
+      </a>)}
+    </div>
+  </div>
+</PageLayout>

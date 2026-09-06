@@ -1,0 +1,23 @@
+#!/bin/sh
+set -eu
+node scripts/check-identity.mjs
+case "$2" in
+  https://github.com/michael-aguilar-web/michaelsite-v4.git) ;;
+  *) echo 'Push blocked: use the web-account HTTPS origin for michaelsite-v4.' >&2; exit 1 ;;
+esac
+while read -r local_ref local_sha remote_ref remote_sha; do
+  case "$local_sha" in 0000000000000000000000000000000000000000) continue ;; esac
+  if [ "$remote_sha" = 0000000000000000000000000000000000000000 ]; then
+    commits=$(git rev-list "$local_sha" --not --remotes)
+  else
+    commits=$(git rev-list "$remote_sha..$local_sha")
+  fi
+  for commit in $commits; do
+    identity=$(git show -s --format='%an <%ae>|%cn <%ce>' "$commit")
+    if [ "$identity" != 'michael-aguilar-web <michael.b.aguilar+web@gmail.com>|michael-aguilar-web <michael.b.aguilar+web@gmail.com>' ]; then
+      echo "Push blocked: commit $commit has a non-web author or committer." >&2
+      exit 1
+    fi
+  done
+done
+node scripts/check-github-account.mjs

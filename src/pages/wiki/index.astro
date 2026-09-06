@@ -1,0 +1,15 @@
+---
+import WikiLayout from '../../components/WikiLayout.astro';
+import { getCollection } from 'astro:content';
+const notes = (await getCollection('wiki')).filter((note) => !note.data.draft && !note.id.includes('/')).sort((a, b) => a.data.order - b.data.order);
+---
+<WikiLayout title="Wiki — Michael Aguilar" description="Michael Aguilar’s FRC notes.">
+  <article class="wiki-document">
+    <h1>wiki</h1>
+    <p class="wiki-lead">(almost) everything I know about FRC</p>
+    <p class="wiki-status">Work in progress</p>
+    <ul class="wiki-index">
+      {notes.map((note) => <li><a href={`/wiki/${note.id}/`}>{note.data.title}<span aria-hidden="true">↗</span></a></li>)}
+    </ul>
+  </article>
+</WikiLayout>

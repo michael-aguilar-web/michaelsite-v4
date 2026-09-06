@@ -1,0 +1,112 @@
+<dialog class="gallery-viewer" aria-labelledby="viewer-title">
+  <button class="viewer-close" type="button" aria-label="Close project">×</button>
+  <div data-viewer-content></div>
+</dialog>
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('.gallery-viewer');
+  const content = dialog?.querySelector<HTMLElement>('[data-viewer-content]');
+  const close = dialog?.querySelector<HTMLButtonElement>('.viewer-close');
+  if (dialog && content && close) {
+    let activeProject: HTMLDetailsElement | null = null;
+    let slide = 0;
+    let figures: HTMLElement[] = [];
+    let dots: HTMLButtonElement[] = [];
+    let status: HTMLElement | null = null;
+    let touchStart: { x: number; y: number } | null = null;
+
+    function showSlide(index: number) {
+      slide = (index + figures.length) % figures.length;
+      figures.forEach((figure, i) => {
+        figure.hidden = i !== slide;
+        const image = figure.querySelector<HTMLImageElement>('img');
+        if (i === slide && image?.dataset.fullSrc && !image.hasAttribute('src')) image.src = image.dataset.fullSrc;
+      });
+      dots.forEach((dot, i) => { dot.setAttribute('aria-pressed', String(i === slide)); });
+      if (status) status.textContent = `${slide + 1} / ${figures.length}`;
+    }
+
+    function openProject(project: HTMLDetailsElement) {
+      const detail = project.querySelector<HTMLElement>('[data-project-detail]');
+      if (!detail) return;
+      activeProject = project;
+      const clone = detail.cloneNode(true) as HTMLElement;
+      clone.querySelector('[data-project-title]')!.id = 'viewer-title';
+      const media = clone.querySelector<HTMLElement>('[data-project-media]')!;
+      figures = Array.from(media.querySelectorAll('figure'));
+      dots = [];
+      status = null;
+      // Several original WebP files are large CAD animations. Fetch them only
+      // when selected, so opening a project stays inexpensive on mobile.
+      figures.forEach((figure) => {
+        const img = figure.querySelector<HTMLImageElement>('img')!;
+        img.dataset.fullSrc = img.getAttribute('src')!;
+        img.removeAttribute('src');
+        img.loading = 'eager';
+        img.hidden = true;
+        const state = document.createElement('p');
+        state.className = 'viewer-image-status';
+        state.setAttribute('role', 'status');
+        state.textContent = 'Loading image…';
+        figure.append(state);
+        img.addEventListener('load', () => { state.hidden = true; img.hidden = false; });
+        img.addEventListener('error', () => { state.textContent = 'Image could not be loaded.'; });
+      });
+      if (figures.length > 1) {
+        const controls = document.createElement('div');
+        controls.className = 'viewer-controls';
+        const previous = document.createElement('button');
+        previous.type = 'button'; previous.textContent = '←'; previous.setAttribute('aria-label', 'Previous photo');
+        previous.addEventListener('click', () => showSlide(slide - 1));
+        const next = document.createElement('button');
+        next.type = 'button'; next.textContent = '→'; next.setAttribute('aria-label', 'Next photo');
+        next.addEventListener('click', () => showSlide(slide + 1));
+        const dotGroup = document.createElement('div');
+        dotGroup.className = 'viewer-dots';
+        dots = figures.map((_, i) => {
+          const dot = document.createElement('button');
+          dot.type = 'button'; dot.setAttribute('aria-label', `Photo ${i + 1}`);
+          dot.addEventListener('click', () => showSlide(i)); dotGroup.append(dot); return dot;
+        });
+        status = document.createElement('span'); status.className = 'viewer-count'; status.setAttribute('aria-live', 'polite');
+        controls.append(previous, dotGroup, status, next);
+        media.append(controls);
+      }
+      showSlide(0);
+      content!.replaceChildren(clone);
+      if (!dialog!.open) dialog!.showModal();
+      document.body.classList.add('viewer-open');
+      close!.focus();
+    }
+
+    const projects = Array.from(document.querySelectorAll<HTMLDetailsElement>('[data-project]'));
+    for (const project of projects) {
+      project.querySelector('[data-project-open]')?.addEventListener('click', (event) => {
+        event.preventDefault();
+        openProject(project);
+      });
+    }
+    close.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+    dialog.addEventListener('close', () => {
+      content.replaceChildren();
+      document.body.classList.remove('viewer-open');
+      activeProject?.querySelector<HTMLElement>('summary')?.focus();
+    });
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        event.preventDefault(); showSlide(slide + (event.key === 'ArrowRight' ? 1 : -1));
+      }
+    });
+    content.addEventListener('touchstart', (event) => {
+      const target = event.target as HTMLElement;
+      touchStart = target.closest('[data-project-media]') && !target.closest('button') ? { x: event.touches[0].clientX, y: event.touches[0].clientY } : null;
+    }, { passive: true });
+    content.addEventListener('touchend', (event) => {
+      if (!touchStart) return;
+      const dx = event.changedTouches[0].clientX - touchStart.x;
+      const dy = event.changedTouches[0].clientY - touchStart.y;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) showSlide(slide + (dx < 0 ? 1 : -1));
+      touchStart = null;
+    }, { passive: true });
+  }
+</script>

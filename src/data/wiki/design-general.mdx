@@ -1,0 +1,184 @@
+---
+title: "design general"
+order: 2
+---
+
+note is heavily WIP
+
+## michael's giga list of strategic design do or dies
+
+aka the driver biased golden rules
+
+### 0. general takes
+  - strategic design should be incredibly driver biased
+    - if the driver has to play operation to **pick up** a game piece it's not fun
+    - if the driver has to play operation to **place** a game piece it's not fun
+    - the driver should be able to "drive it like they stole it" and not be afraid of breaking it
+      - low cg
+    - if you can't get a week of drive practice minimum you are designing more than you can handle
+      - drive practice is everything
+      - if your robot can't perform as it was designed to do, you aren't playing the game
+  - but overall elite strategic design is simple: make a robot that wins 99% of your matches in auton
+    - a robot purpose built to win auton usually has all the bells and whistles a driver should want
+    - winning in auton means the rest of the match is relaxed
+    - Teams that design to perform well in auton usually place high
+      - lots of simple strategic design micro you can do to make ur robot better in auton: what intake side vs outtake side, how you hold the piece, how many motions it takes for the robot to score, etc
+  - leave **nothing** to chance, control everything **within your resources / capabilities**
+
+### 1. driver setup
+  - one driver only, always, no exceptions
+    - if your robot requires 2 drivers it's probably too complicated
+    - you should have the programming resources to automate whatever robot you build to be able to fit it on one controller
+    - operator controller is fine for debug / backup stuff but the robot should be able to be driven off the main controller in most cases; in some games you really want a second human player instead
+  - 4 year drivers
+    - example: parker
+  - hot take: when choosing a driver, choose the kid with the biggest ego
+    - the best drivers have the biggest egos
+    - the people who perform best under pressure are usually a little insane
+    - the kids that pick up the controllers the fastest are usually the ones that care the most
+  - swerve
+    - that is all
+
+### 2. software
+  - frc is now a software game: https://youtu.be/vGajw5-vbo8?si=zi4d7QjN0jgQmHaw
+    - However the foundation is set with mechanical robustness
+    - Good software can make a decent mechanical robot great
+      - a simple mechanical robot with complex software is lightweight
+      - Modern frc software allows you to get away with very simple architectures that would have been incredibly troll a decade ago
+        - Simple architecture means it’s done faster which means it can be programmed earlier
+    - The advent of April tags means a lot of actions that were once driver skill checks are now just programming automation skill checks
+
+## design wisdom (by phase)
+
+### ideation
+
+- all design team members must know the [golden rules](/wiki/golden-rules/) by heart / the preachings of karthik in effective first strategies
+
+### sketching
+
+- <mark>sketch it on paper before you cad it!!! cad software can get in the way of ideas (sketch everything)</mark>
+- when master sketching, don't forget starting config doesn't have to be the same as idle config, like 2910 2023/25 where the arm starts at a 45 but idles flat
+
+**pick n' place specific wisdom:**
+  - it's called pick and **place**, not pick and shoot, pick and lob, pick and drop
+    - baits: 2025 coral shooters, 2019 ball shooters, 2023 cone shooters, etc
+    - this is usually because of the precision required, pnp games are more about precision than raw speed; being fast means nothing if you drop pieces (especially if it's a one game piece at a time game)
+
+### prototyping
+
+- start with simple tested frc design before doing anything specialty
+    - for example with intakes: try to make good ol compliant wheels or silicone rollers work first before doing any specialty wheels or anything, alpha robot can be super simple standard design before comp robot
+    - throwing an ri3d intake onto the alpha robot just to have something by week 1 for autons
+- prototyping with a purpose: making sure that we aren't making meme prototypes that don't actually prove anything (2017 8020 shooter in derek's driveway), 2020 shooter is acceptable (see google photos)
+    - important things to test: material types, geometry, subsystem archetypes (catapult vs flywheel)
+    - not important things: can a spinny wheel shoot a ball (answer is most likely yes)
+- 2056 word of advice: make decisions early, more time to regret them later (maximizing time to execute plan), easy to get stuck in analysis paralysis
+
+### comp robot design
+
+**big picture ideas:**
+
+- Don’t reinvent the wheel in the cad stage, better to do it after you get a working robot
+    - 2018 v1 elevator was cringe and unncessary
+- Transparent volumes for electrical go / no go zones in the cad model
+- always be reevaluating where to put weight/strength
+    - It’s ok to sacrifice some stiffness if you can use the weight on other things
+
+### manufacturing / assembly
+
+- before machining / assembling stuff, check check and triple check, or even plan ahead and make an assembly guide
+    - that one time it took way too long to assemble the 2023 v1 intake
+
+### iteration
+- You can make more 5% optimizations than you think, a rebuild isn’t always the correct play, and making a high ceiling archetype from the start isn’t always the correct play
+- chase constant improvements no matter how little
+    - A lot of the mid-tier-but-could-be-great teams have a lot of things that are like 6-8/10 on their robot but could be 10/10 with a little work
+    - That being said don’t make changes unless they are well tested
+    - The season is a marathon not a race
+
+## random ideas (sort later)
+
+- Minimizing dofs is important, but if the mechanism gets to a certain point of complexity, it might be better to just add another dof (3005 2023)
+- Handoffs are a high coordination risk medium reward type thing
+- have a mechanism do 2 tasks that require similar motions when possible (and not too complex)
+    - 2056 2016 intake + fries manipulator
+    - 2910 2022 hood climber
+    - random thought based off 1678 intake pivot from 2024 (or my mental model off it): use pivot jack shaft (one with small sprocket) as also a roller dead axle shaft for indexer/conveyor
+- think deeply whether you want to have the intake be the same side as the scoring mechanism or not, the answer is not always obvious
+    - key idea is with swerve, you want the motors to be going full send when possible, so that means not turning when possible
+- you can reduce mechanical movement with geometric elegance
+
+- if the human players can't deliver game pieces to the ground (ie there are no intentional ways for pieces to end up on the ground), then picking up game pieces off the ground is bad because good teams don't drop pieces
+- rolly grab literally everything
+    - 2910 2025
+    - 1323 2019 hatch mech
+- Do more passive dofs
+    - 254 2025 off-season u catcher thingy
+    - 971 2024 note path where the route was determined by the elevator height (might not be remembering that correctly but check it again)
+    - 581 2026 indexer that moved up as intake went in, good concept in general but bad in this specific case because when the intake got smashed in, the indexer could jam up
+
+
+### reducing mechanical movement with geometric elegance
+- <mark>buffer spot / breakpoint for a gamepiece should be as close to the exit point of each mechanism as possible</mark>
+      - [https://youtu.be/DAxiSBVn5yg?si=iU01QHVHrZukeC4z](https://youtu.be/DAxiSBVn5yg?si=iU01QHVHrZukeC4z)
+      - ie: the cube takes too long to move from the pooper from their buffer spot when it should be closer
+
+**examples:**
+- 2056 climb alignment 2025, just hug the wall and slide no lineup effort required
+- 2019 intakes that bring piece right to a scoring posture without any elevator movement
+  - 148 / 3015
+  - same concept, 2025 118, where they can score l2/l3 without any elevator movement, only pivoting their arm (missed this in our master sketch)
+    - rush 2025 robot bad because it does the opposite, the pre-scoring pose is guaranteed one movement away from scoring pose (arm always has to twist) so the time is wasted when the elevator goes up
+- 254 amp mech hands off the note vertically but the scoring position is at an angle
+    - <a href="https://images.amplenote.com/6f070504-e871-11ed-8539-b69062a3be3e/87bef6f8-c792-47f9-b135-a613b369a6d2.png" className="article-image-link"><img src="https://images.amplenote.com/6f070504-e871-11ed-8539-b69062a3be3e/87bef6f8-c792-47f9-b135-a613b369a6d2.png" alt="FRC mechanism reference" width="563" loading="lazy" /></a>
+
+
+### random mechanical concepts?
+
+- don't use belts on position subsystems (intake pivot, etc) to prevent inevitable belt slippage, they're also bad because they're springy (backlash)
+- If something is gonna be experiencing a shock load don’t have a belt in the load path (belt teeth can shear
+- use more square nuts when designing an inserted/press in nut on a 3dp parts since they’re less likely to round out
+- definitely should use \#10 babby standoffs more (5/16" OD)
+    - shoutout to aluminumspacers.com!
+    - maybe do 3 wall nylon standoffs as a replacement ?
+- rivet hat, bearing hat, bolt hats are all tools you should consider for retaining bearings
+- live axle vs dead axle things to consider
+    - Dead axle easier to mount and can be more compact on the plate side (just need a bolt hole)
+    - live axle (bean 2026 indexer) general means simple plugs, throw them in and forget
+- 6338k582 good for spline id (spline mounted on .75” od dead axle)
+    - Actually don’t prio this there’s probably easier ways to get ur kebab stack rotationally linked that don’t weigh as much
+- cf round tubing is approx 50% weight reduction (vs 6061) at similar wall thicknesses 🥀 p2w ($50 for 3’ vs $22.5 for 3’), however it's more brittle
+
+- <a href="https://images.amplenote.com/6f070504-e871-11ed-8539-b69062a3be3e/be4445c3-7b09-4385-a25d-dac3c4f51086.png" className="article-image-link"><img src="https://images.amplenote.com/6f070504-e871-11ed-8539-b69062a3be3e/be4445c3-7b09-4385-a25d-dac3c4f51086.png" alt="FRC mechanism reference" width="861" loading="lazy" /></a>
+
+
+### random team specific nifty stuff
+- 1323 chain tensioner
+    - <a href="https://images.amplenote.com/6f070504-e871-11ed-8539-b69062a3be3e/f001b1c4-df94-41c8-b8f3-8d41b6165e24.png" className="article-image-link"><img src="https://images.amplenote.com/6f070504-e871-11ed-8539-b69062a3be3e/f001b1c4-df94-41c8-b8f3-8d41b6165e24.png" alt="FRC mechanism reference" loading="lazy" /></a>
+- 2910 really likes to throw a lot of motors at a problem to make it go away, 2026 indexer+hopper uses 4 krakens at 1:1 which is wild
+- 1678 gears are double stacked and intentionally clocked out of phase to minimize backlash on critical subsystems (not shown in screenshot but yea)
+
+    - <a href="https://images.amplenote.com/6f070504-e871-11ed-8539-b69062a3be3e/204a7e62-61f2-4412-a66b-49aed12615bb.png" className="article-image-link"><img src="https://images.amplenote.com/6f070504-e871-11ed-8539-b69062a3be3e/204a7e62-61f2-4412-a66b-49aed12615bb.png" alt="FRC mechanism reference" width="299" loading="lazy" /></a>
+
+    - <a href="https://images.amplenote.com/6f070504-e871-11ed-8539-b69062a3be3e/2394c762-d591-40bd-ae51-d3fca5185080.png" className="article-image-link"><img src="https://images.amplenote.com/6f070504-e871-11ed-8539-b69062a3be3e/2394c762-d591-40bd-ae51-d3fca5185080.png" alt="FRC mechanism reference" width="471" loading="lazy" /></a>
+- 971 2017 magical floor intake - [https://youtu.be/h-AZPGTwugU?t=13](https://youtu.be/h-AZPGTwugU?t=13)
+- 148 choo choo / climber - [https://youtu.be/_hTyXQUgYLE?t=109](https://youtu.be/_hTyXQUgYLE?t=109)
+- [THIS TURNED SUPER META SINCE I WROTE IT DOWN] 1678 roller design - [https://www.chiefdelphi.com/t/1678-citrus-circuits-2023-cad-and-code-release/437632/30?u=michael.aguilar](https://www.chiefdelphi.com/t/1678-citrus-circuits-2023-cad-and-code-release/437632/30?u=michael.aguilar)
+
+    - Honestly just look through the entire cad: [https://www.chiefdelphi.com/t/1678-citrus-circuits-2023-cad-and-code-release/437632/59](https://www.chiefdelphi.com/t/1678-citrus-circuits-2023-cad-and-code-release/437632/59)
+
+    - 2022 robot basically shows how much they care about low cg, every mechanism is belted to a motor really low on the robot
+- 254 climber bending
+
+    - <a href="https://images.amplenote.com/6f070504-e871-11ed-8539-b69062a3be3e/f2e8897d-7f84-4e30-aced-90c2cb702ed5.jpg" className="article-image-link"><img src="https://images.amplenote.com/6f070504-e871-11ed-8539-b69062a3be3e/f2e8897d-7f84-4e30-aced-90c2cb702ed5.jpg" alt="FRC mechanism reference" width="527" loading="lazy" /></a>
+- High tide shim tape tip and roller design
+
+    - [https://www.chiefdelphi.com/t/team-4414-hightide-2023-robot-tsunami/428584/222?u=michael.aguilar](https://www.chiefdelphi.com/t/team-4414-hightide-2023-robot-tsunami/428584/222?u=michael.aguilar)
+
+- 254 2024 pizza box spindexer uses magnets to align top bottom plates on removable part
+
+- Strain relief [https://www.chiefdelphi.com/t/what-are-your-experiences-with-anderson-powerpoles-vs-wagos/444693/6?u=michael.aguilar](https://www.chiefdelphi.com/t/what-are-your-experiences-with-anderson-powerpoles-vs-wagos/444693/6?u=michael.aguilar)
+
+- Citrus composite intake thing is mainly just so that the if the polycarb shatters then there's something holding it together-ish (the stiffness impact toughness thing lowkey fake)
+
+    - <a href="https://images.amplenote.com/6f070504-e871-11ed-8539-b69062a3be3e/a2fc429a-8637-4e25-a522-49d5dc0b3ff1.png" className="article-image-link"><img src="https://images.amplenote.com/6f070504-e871-11ed-8539-b69062a3be3e/a2fc429a-8637-4e25-a522-49d5dc0b3ff1.png" alt="FRC mechanism reference" width="348" loading="lazy" /></a>

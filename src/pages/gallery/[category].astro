@@ -1,0 +1,35 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import GalleryCategories from '../../components/GalleryCategories.astro';
+import GalleryViewer from '../../components/GalleryViewer.astro';
+import gallery from '../../data/gallery.json';
+import '../../styles/gallery.css';
+export function getStaticPaths() { return gallery.map((category) => ({ params: { category: category.id }, props: { category } })); }
+const { category } = Astro.props;
+---
+<PageLayout title={`${category.title} — Michael Aguilar`} section="gallery">
+  <div class="gallery-page page-width-wide">
+    <div class="gallery-heading"><a href="/gallery/" class="back-link">← Gallery</a><h1 class="page-heading">{category.title}<span class="name-dot">.</span></h1></div>
+    <GalleryCategories activeId={category.id} />
+    <div class="project-grid">
+      {category.projects.map((project, index) => <details class="project-card" id={project.id} data-project>
+        <summary data-project-open>
+          <div class="project-image"><img src={`/images/previews/${project.images[0].split('/').at(-1)}`} width="960" height="720" alt={project.title} loading={index < 3 ? 'eager' : 'lazy'} /></div>
+          <div class="project-caption"><h2>{project.title.split(' // ')[0]}</h2><span aria-hidden="true">↗</span>{project.title.includes(' // ') && <p>{project.title.split(' // ')[1]}</p>}</div>
+        </summary>
+        <div class="project-detail" data-project-detail>
+          <div class="project-media" data-project-media aria-label={`${project.title} photos`}>
+            {project.images.map((image, i) => <figure><img src={image} alt={`${project.title} — photo ${i + 1}`} loading="lazy" decoding="async" /></figure>)}
+          </div>
+          <div class="project-description">
+            <h2 data-project-title>{project.title}</h2>
+            <p class="project-deck">{project.description}</p>
+            {project.infoHtml && <div class="project-info" set:html={project.infoHtml} />}
+            {project.links.length > 0 && <ul class="project-links">{project.links.map((link) => <li><a href={link.url} target="_blank" rel="noopener noreferrer">{link.label}<span aria-hidden="true">↗</span></a></li>)}</ul>}
+          </div>
+        </div>
+      </details>)}
+    </div>
+    <GalleryViewer />
+  </div>
+</PageLayout>

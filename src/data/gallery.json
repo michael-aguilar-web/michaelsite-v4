@@ -1,0 +1,212 @@
+[
+  {
+    "id": "frc",
+    "title": "FRC Robots",
+    "projects": [
+      {
+        "id": "clover-1833-2026",
+        "title": "Clover // 1833 2026",
+        "description": "Team 1833's robot Clover, built for the 2026 REBUILT season.",
+        "images": [
+          "/images/gallery/BEAN26.webp",
+          "/images/gallery/BEAN26_2.webp",
+          "/images/gallery/BEAN26_3.webp"
+        ],
+        "links": [
+          {
+            "label": "Match Video (YouTube)",
+            "url": "https://www.youtube.com/watch?v=mKHfhSehWHg"
+          },
+          {
+            "label": "Statbotics",
+            "url": "https://www.statbotics.io/team/1833/2026"
+          }
+        ],
+        "infoHtml": "<p><strong>Accomplishments:</strong></p>\n              <ul>\n                <li>Finished the season ranked 35th worldwide (out of 3724)</li>\n                <li>World Championship Division Finalists (round of 16)</li>\n                <li>State Championship Winners, 2x Qualifier Winners</li>\n              </ul>"
+      },
+      {
+        "id": "sprout-1833-2025",
+        "title": "Sprout // 1833 2025",
+        "description": "Team 1833's robot Sprout, built for the 2025 REEFSCAPE season.",
+        "images": [
+          "/images/gallery/BEAN25.webp",
+          "/images/gallery/BEAN25_2.webp"
+        ],
+        "links": [
+          {
+            "label": "Public CAD Release (Onshape)",
+            "url": "https://cad.onshape.com/documents/7352031dc691f38153ccf1cc/w/e72cda79ddd30179206cdaa4/e/1f98def145668d8737add48f?renderMode=0&uiState=6a0a3d80643f5ee15ada0891"
+          },
+          {
+            "label": "Match Video (YouTube)",
+            "url": "https://www.youtube.com/watch?v=7Uyh4NzLGgQ"
+          },
+          {
+            "label": "Statbotics",
+            "url": "https://www.statbotics.io/team/1833/2025"
+          }
+        ],
+        "infoHtml": "<p><strong>Accomplishments:</strong></p>\n              <ul>\n                <li>Finished the season ranked 131st worldwide (out of 3702)</li>\n                <li>State Championship Winners, Gwinnett Qualifier Winners</li>\n              </ul>"
+      },
+      {
+        "id": "ottotune-1746-2024-v2",
+        "title": "OTTOTUNE // 1746 2024 v2",
+        "description": "Team 1746's second robot, OTTOTUNE, rebuilt during the 2024 CRESCENDO season.",
+        "images": [
+          "/images/gallery/OTTO24B.webp"
+        ],
+        "links": [],
+        "infoHtml": ""
+      },
+      {
+        "id": "ottotune-1746-2024-v1",
+        "title": "OTTOTUNE // 1746 2024 v1",
+        "description": "Team 1746's first robot, OTTOTUNE, built for the 2024 CRESCENDO season.",
+        "images": [
+          "/images/gallery/OTTO24A.webp"
+        ],
+        "links": [],
+        "infoHtml": ""
+      },
+      {
+        "id": "low-calorie-1746-2023-v2",
+        "title": "Low Calorie // 1746 2023 v2",
+        "description": "Team 1746's second robot, Low Calorie, rebuilt during the 2023 CHARGED UP season.",
+        "images": [
+          "/images/gallery/OTTO23B.webp"
+        ],
+        "links": [],
+        "infoHtml": ""
+      },
+      {
+        "id": "calorie-1746-2023-v1",
+        "title": "Calorie // 1746 2023 v1",
+        "description": "Team 1746's first robot, Calorie, built for the 2023 CHARGED UP season.",
+        "images": [
+          "/images/gallery/OTTO23A.webp"
+        ],
+        "links": [],
+        "infoHtml": ""
+      },
+      {
+        "id": "otto-17-1746-2017",
+        "title": "OTTO 17 // 1746 2017",
+        "description": "Team 1746's robot, OTTO 17, built for the 2017 STEAMWORKS season.",
+        "images": [
+          "/images/gallery/OTTO17.webp"
+        ],
+        "links": [],
+        "infoHtml": ""
+      },
+      {
+        "id": "garbanzo-bot-1746-2016-v2",
+        "title": "Garbanzo Bot // 1746 2016 v2",
+        "description": "Team 1746's robot, Garbanzo Bot, built for the 2016 STRONGHOLD offseason.",
+        "images": [
+          "/images/gallery/OTTO16B.webp"
+        ],
+        "links": [],
+        "infoHtml": ""
+      },
+      {
+        "id": "otto-16-1746-2016-v1",
+        "title": "OTTO 16 // 1746 2016 v1",
+        "description": "Team 1746's robot, OTTO 16, built for the 2016 STRONGHOLD season.",
+        "images": [
+          "/images/gallery/OTTO16A.webp"
+        ],
+        "links": [],
+        "infoHtml": ""
+      }
+    ]
+  },
+  {
+    "id": "3d-prints",
+    "title": "Simple 3D Prints",
+    "projects": [
+      {
+        "id": "soldering-fan-filter",
+        "title": "Soldering Fan Filter",
+        "description": "Screw-on addition to desktop soldering fan.",
+        "images": [
+          "/images/gallery/fanfilter_1.webp",
+          "/images/gallery/fanfilter_2.webp",
+          "/images/gallery/fanfilter_3.webp",
+          "/images/gallery/fanfilter_4.webp"
+        ],
+        "links": [
+          {
+            "label": "CAD (Onshape)",
+            "url": "https://cad.onshape.com/documents/e15714a6a863859f588cdd43/w/3924d16244ae12dfe882831f/e/2b97dc971b7a94065de29319?renderMode=0&uiState=6a0a4473497c53d4f6a576ff"
+          }
+        ],
+        "infoHtml": "<p>Small screw-on addition to my desktop soldering fan to filter out some of the smoke.</p>"
+      },
+      {
+        "id": "poop-chute",
+        "title": "Poop Chute",
+        "description": "Purged filament slide for my Bambu X1C.",
+        "images": [
+          "/images/gallery/poopchute_1.webp",
+          "/images/gallery/poopchute_2.webp",
+          "/images/gallery/poopchute_3.webp",
+          "/images/gallery/poopchute_4.webp",
+          "/images/gallery/poopchute_5.webp"
+        ],
+        "links": [],
+        "infoHtml": "<p>Custom designed purged filament slide for my Bambu X1C, designed to fit my room layout.</p>"
+      },
+      {
+        "id": "clamp-case",
+        "title": "Clamp Case",
+        "description": "Case for attaching a portable SSD to my phone.",
+        "images": [
+          "/images/gallery/clampcase_1.webp",
+          "/images/gallery/clampcase_2.webp",
+          "/images/gallery/clampcase_3.webp"
+        ],
+        "links": [],
+        "infoHtml": "<p>Over-center clamp-on case to attach my portable SSD to my phone. I wanted to design something that\n                didn't use magnets.</p>"
+      }
+    ]
+  },
+  {
+    "id": "apps",
+    "title": "Custom Apps",
+    "projects": [
+      {
+        "id": "frc-overlay-generator",
+        "title": "FRC Overlay Generator",
+        "description": "Tool for analyzing official match recordings to generate a custom video overlay.",
+        "images": [
+          "/images/gallery/overlay_1.webp",
+          "/images/gallery/overlay_2.webp",
+          "/images/gallery/overlay_3.webp",
+          "/images/gallery/overlay_4.webp"
+        ],
+        "links": [
+          {
+            "label": "Example Video (YouTube)",
+            "url": "https://www.youtube.com/watch?v=R0sQG-sU-5k"
+          }
+        ],
+        "infoHtml": "<p>Rather than manually editing score overlays onto my match recordings, I built a React app that uses\n                Tesseract OCR to read scores from official footage and automatically generate overlays via Remotion.</p>\n\n              <p><strong>Features:</strong></p>\n              <ul>\n                <li>Built-in youtube video downloader for convenience</li>\n                <li>Saveable configurations for a given event's overlay - once set up, multiple matches from that\n                  event can be processed without reconfiguring</li>\n                <li>Robust data filtering and validation to ensure accurate score extraction</li>\n                <li>Customizable video overlay design with animated transitions</li>\n              </ul>\n\n              <p><strong>Frontend:</strong></p>\n              <ul>\n                <li>React 19 + TypeScript</li>\n                <li>Vite</li>\n                <li>Tailwind CSS v4</li>\n                <li>shadcn/ui (component primitives)</li>\n              </ul>\n\n              <p><strong>Backend:</strong></p>\n              <ul>\n                <li>FastAPI (Python)</li>\n                <li>uvicorn</li>\n                <li>OpenCV (image processing)</li>\n                <li>Tesseract OCR (text recognition)</li>\n                <li>yt-dlp</li>\n              </ul>\n\n              <p><strong>Overlay Generation:</strong></p>\n              <ul>\n                <li>Remotion (React based video rendering)</li>\n              </ul>"
+      },
+      {
+        "id": "shorts-info-card-generator",
+        "title": "Shorts Info Card Generator",
+        "description": "Tool for generating FRC team info cards for Short form videos.",
+        "images": [
+          "/images/gallery/cardgenerator.webp"
+        ],
+        "links": [
+          {
+            "label": "Example Video (YouTube)",
+            "url": "https://www.youtube.com/shorts/B-qaPx4YGOo"
+          }
+        ],
+        "infoHtml": "<p>My short form videos needed a clean way to display the info of the team in the video, so I set up a\n                simple Remotion project that generates an animated overlay.</p>\n\n              <p><strong>Features:</strong></p>\n              <ul>\n                <li>Customizable appearance based on team colors</li>\n                <li>Toggles for additional team info and additional banners for social media</li>\n                <li>Animated transitions</li>\n              </ul>"
+      }
+    ]
+  }
+]

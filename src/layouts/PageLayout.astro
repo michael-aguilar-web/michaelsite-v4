@@ -1,0 +1,28 @@
+---
+import SiteHeader from '../components/SiteHeader.astro';
+import '../styles/global.css';
+interface Props { title?: string; description?: string; section?: string; pageClass?: string; }
+const { title = 'Michael Aguilar', description = 'Michael Aguilar’s projects and FRC notes.', section = '', pageClass = '' } = Astro.props;
+const canonical = new URL(Astro.url.pathname === '/404/' ? '/404.html' : Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    {section === 'wiki' && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/png" href="/bean.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300..700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <title>{title}</title>
+  </head>
+  <body class={pageClass}>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <SiteHeader activeSection={section} />
+    <main id="main-content"><slot /></main>
+    <footer class="site-footer page-width-wide"><a href="/">Michael Aguilar</a><a href="mailto:michael.b.aguilar@gmail.com">Email ↗</a></footer>
+  </body>
+</html>

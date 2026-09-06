@@ -1,0 +1,18 @@
+---
+import { getCollection, render } from 'astro:content';
+import WikiLayout from '../../components/WikiLayout.astro';
+import ContentArticle from '../../components/ContentArticle.astro';
+export async function getStaticPaths() {
+  const notes = await getCollection('wiki');
+  return notes.filter((note) => !note.data.draft).map((note) => ({ params: { slug: note.id }, props: { note } }));
+}
+const { note } = Astro.props;
+const { Content, headings } = await render(note);
+const outline = headings.filter((heading) => heading.depth === 2);
+---
+<WikiLayout title={`${note.data.title} — Michael Aguilar`} description={note.data.description ?? note.data.title} activeId={note.id}>
+  <ContentArticle title={note.data.title} publishedDate={note.data.publishedDate} updatedDate={note.data.updatedDate}>
+    {outline.length > 2 && <details class="article-toc"><summary>On this page</summary><ul>{outline.map((heading) => <li><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ul></details>}
+    <Content />
+  </ContentArticle>
+</WikiLayout>

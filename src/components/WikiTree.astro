@@ -1,0 +1,22 @@
+---
+import type { WikiNode } from '../lib/wiki';
+interface Props { nodes: WikiNode[]; activeId: string; }
+const { nodes, activeId } = Astro.props;
+---
+{nodes.map((node) => node.children.length ? (
+  <details class="wiki-tree-folder" open={activeId === node.id || activeId.startsWith(`${node.id}/`)}>
+    <summary>
+      <svg class="wiki-folder-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M2.75 5.25h5l1.5 1.75h8v9.25H2.75z" /></svg>
+      <span>{node.title}</span>
+    </summary>
+    <div class="wiki-tree-children">
+      {node.href && <a class:list={['wiki-tree-link', { active: activeId === node.id }]} href={node.href} aria-current={activeId === node.id ? 'page' : undefined}>Overview</a>}
+      <Astro.self nodes={node.children} activeId={activeId} />
+    </div>
+  </details>
+) : (
+  <a class:list={['wiki-tree-link', { active: activeId === node.id }]} href={node.href} aria-current={activeId === node.id ? 'page' : undefined}>
+    <svg class="wiki-page-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 2.75h6.2L15 6.55v10.7H5z" /><path d="M11.2 2.75v3.8H15M7.4 10h5.2M7.4 13h4" /></svg>
+    <span>{node.title}</span>
+  </a>
+))}

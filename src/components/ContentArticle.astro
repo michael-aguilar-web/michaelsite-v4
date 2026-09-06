@@ -1,0 +1,95 @@
+---
+interface Props {
+  title: string;
+  backHref?: string;
+  backLabel?: string;
+  publishedDate?: Date;
+  updatedDate?: Date;
+}
+
+const { title, backHref, backLabel = 'back', publishedDate, updatedDate } = Astro.props;
+const formatDate = (date: Date) => new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+}).format(date).toLowerCase();
+---
+
+<article class:list={['content-article', 'page-width', { 'content-article--no-back': !backHref }]}>
+  {backHref && <a class="content-back-link" href={backHref}>← {backLabel}</a>}
+  <header class="content-header"><h1>{title}</h1></header>
+  {(publishedDate || updatedDate) && (
+    <div class="content-dates" aria-label="Article dates">
+      {publishedDate && <span>posted <time datetime={publishedDate.toISOString()}>{formatDate(publishedDate)}</time></span>}
+      {publishedDate && updatedDate && <span class="content-date-separator" aria-hidden="true">·</span>}
+      {updatedDate && <span>last updated <time datetime={updatedDate.toISOString()}>{formatDate(updatedDate)}</time></span>}
+    </div>
+  )}
+  <div class="prose migrated-content"><slot /></div>
+  <dialog class="image-lightbox" data-image-lightbox aria-label="Image viewer">
+    <div class="image-lightbox-panel">
+      <button class="image-lightbox-close" type="button" data-image-lightbox-close aria-label="Close image viewer">×</button>
+      <div class="image-lightbox-media">
+        <span class="image-lightbox-status" data-image-lightbox-status>loading image…</span>
+        <img alt="" decoding="async" data-image-lightbox-image />
+      </div>
+      <p class="image-lightbox-caption" data-image-lightbox-caption hidden></p>
+    </div>
+  </dialog>
+</article>
+
+<script>
+  const lightbox = document.querySelector<HTMLDialogElement>('[data-image-lightbox]');
+  const lightboxImage = lightbox?.querySelector<HTMLImageElement>('[data-image-lightbox-image]');
+  const lightboxCaption = lightbox?.querySelector<HTMLElement>('[data-image-lightbox-caption]');
+  const lightboxStatus = lightbox?.querySelector<HTMLElement>('[data-image-lightbox-status]');
+  const closeButton = lightbox?.querySelector<HTMLButtonElement>('[data-image-lightbox-close]');
+  const imageHrefPattern = /\.(?:avif|gif|jpe?g|png|svg|webp)(?:[?#].*)?$/i;
+
+  if (lightbox && lightboxImage && lightboxCaption && lightboxStatus && closeButton) {
+    const imageLinks = document.querySelectorAll<HTMLAnchorElement>('.migrated-content a[href]');
+
+    for (const link of imageLinks) {
+      const href = link.getAttribute('href');
+      if (!href || !imageHrefPattern.test(href)) continue;
+
+      link.dataset.imageViewer = '';
+      link.addEventListener('click', (event) => {
+        if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+
+        event.preventDefault();
+        const caption = link.textContent?.trim() || link.querySelector('img')?.alt || '';
+        lightbox.classList.remove('is-loaded', 'has-error');
+        lightboxStatus.textContent = 'loading image…';
+        lightboxImage.alt = caption;
+        lightboxCaption.textContent = caption;
+        lightboxCaption.hidden = !caption;
+        lightboxImage.src = link.href;
+        lightbox.showModal();
+
+        if (lightboxImage.complete) {
+          if (lightboxImage.naturalWidth > 0) lightbox.classList.add('is-loaded');
+          else {
+            lightbox.classList.add('has-error');
+            lightboxStatus.textContent = 'image could not be loaded';
+          }
+        }
+      });
+    }
+
+    lightboxImage.addEventListener('load', () => lightbox.classList.add('is-loaded'));
+    lightboxImage.addEventListener('error', () => {
+      lightbox.classList.add('has-error');
+      lightboxStatus.textContent = 'image could not be loaded';
+    });
+    closeButton.addEventListener('click', () => lightbox.close());
+    lightbox.addEventListener('click', (event) => {
+      if (event.target === lightbox) lightbox.close();
+    });
+    lightbox.addEventListener('close', () => {
+      lightboxImage.removeAttribute('src');
+      lightbox.classList.remove('is-loaded', 'has-error');
+    });
+  }
+</script>
