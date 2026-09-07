@@ -47,8 +47,8 @@ h2, h3, h4 { font-weight: 500; line-height: 1.3; }
 .skip-link:focus { transform: translateY(0); }
 .gallery-link { display: flex; width: min(100%, 20rem); justify-content: space-between; padding-bottom: .85rem; border-bottom: 1px solid var(--accent); text-decoration: none; font-size: 1.1rem; }
 .page-heading { margin: 3.5rem 0 2.5rem; font-size: clamp(3rem, 6vw, 4.8rem); }
-.back-link { display: inline-block; color: var(--muted); font-size: .875rem; text-decoration: none; }
-.back-link:hover { color: var(--accent); }
+.header-back-link { display: grid; place-items: center; width: 44px; height: 44px; border-radius: .5rem; }
+.header-back-link:hover { background: var(--accent-soft); }
 @media (max-width: 700px) {
   .gallery-link { width: 100%; }
   .page-heading { margin-block: 2.5rem 1.75rem; }

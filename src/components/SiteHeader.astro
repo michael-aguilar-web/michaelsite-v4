@@ -1,10 +1,11 @@
 ---
 import { Image } from 'astro:assets';
 import bean from '../assets/branding/bean.png';
+import backArrow from '../assets/branding/back-60.png';
 interface Props { backHref?: string; backLabel?: string; }
 const { backHref, backLabel = 'Back' } = Astro.props;
 ---
 <header class="site-header page-width-wide">
   <a class="site-brand" href="/" aria-label="Home"><Image src={bean} width={36} height={36} layout="fixed" densities={[1, 2]} loading="eager" alt="" /></a>
-  {backHref && <a class="back-link" href={backHref}>← {backLabel}</a>}
+  {backHref && <a class="header-back-link" href={backHref} aria-label={`Back to ${backLabel}`} title={`Back to ${backLabel}`}><Image src={backArrow} width={28} height={28} layout="fixed" densities={[1, 2]} loading="eager" alt="" /></a>}
 </header>
