@@ -6,7 +6,6 @@
       {
         "id": "clover-1833-2026",
         "title": "Clover // 1833 2026",
-        "description": "Team 1833's robot Clover, built for the 2026 REBUILT season.",
         "images": [
           "/images/gallery/BEAN26.webp",
           "/images/gallery/BEAN26_2.webp",
@@ -27,7 +26,6 @@
       {
         "id": "sprout-1833-2025",
         "title": "Sprout // 1833 2025",
-        "description": "Team 1833's robot Sprout, built for the 2025 REEFSCAPE season.",
         "images": [
           "/images/gallery/BEAN25.webp",
           "/images/gallery/BEAN25_2.webp"
@@ -51,7 +49,6 @@
       {
         "id": "ottotune-1746-2024-v2",
         "title": "OTTOTUNE // 1746 2024 v2",
-        "description": "Team 1746's second robot, OTTOTUNE, rebuilt during the 2024 CRESCENDO season.",
         "images": [
           "/images/gallery/OTTO24B.webp"
         ],
@@ -61,7 +58,6 @@
       {
         "id": "ottotune-1746-2024-v1",
         "title": "OTTOTUNE // 1746 2024 v1",
-        "description": "Team 1746's first robot, OTTOTUNE, built for the 2024 CRESCENDO season.",
         "images": [
           "/images/gallery/OTTO24A.webp"
         ],
@@ -71,7 +67,6 @@
       {
         "id": "low-calorie-1746-2023-v2",
         "title": "Low Calorie // 1746 2023 v2",
-        "description": "Team 1746's second robot, Low Calorie, rebuilt during the 2023 CHARGED UP season.",
         "images": [
           "/images/gallery/OTTO23B.webp"
         ],
@@ -81,7 +76,6 @@
       {
         "id": "calorie-1746-2023-v1",
         "title": "Calorie // 1746 2023 v1",
-        "description": "Team 1746's first robot, Calorie, built for the 2023 CHARGED UP season.",
         "images": [
           "/images/gallery/OTTO23A.webp"
         ],
@@ -91,7 +85,6 @@
       {
         "id": "otto-17-1746-2017",
         "title": "OTTO 17 // 1746 2017",
-        "description": "Team 1746's robot, OTTO 17, built for the 2017 STEAMWORKS season.",
         "images": [
           "/images/gallery/OTTO17.webp"
         ],
@@ -101,7 +94,6 @@
       {
         "id": "garbanzo-bot-1746-2016-v2",
         "title": "Garbanzo Bot // 1746 2016 v2",
-        "description": "Team 1746's robot, Garbanzo Bot, built for the 2016 STRONGHOLD offseason.",
         "images": [
           "/images/gallery/OTTO16B.webp"
         ],
@@ -111,7 +103,6 @@
       {
         "id": "otto-16-1746-2016-v1",
         "title": "OTTO 16 // 1746 2016 v1",
-        "description": "Team 1746's robot, OTTO 16, built for the 2016 STRONGHOLD season.",
         "images": [
           "/images/gallery/OTTO16A.webp"
         ],
@@ -127,7 +118,6 @@
       {
         "id": "soldering-fan-filter",
         "title": "Soldering Fan Filter",
-        "description": "Screw-on addition to desktop soldering fan.",
         "images": [
           "/images/gallery/fanfilter_1.webp",
           "/images/gallery/fanfilter_2.webp",
@@ -145,7 +135,6 @@
       {
         "id": "poop-chute",
         "title": "Poop Chute",
-        "description": "Purged filament slide for my Bambu X1C.",
         "images": [
           "/images/gallery/poopchute_1.webp",
           "/images/gallery/poopchute_2.webp",
@@ -159,7 +148,6 @@
       {
         "id": "clamp-case",
         "title": "Clamp Case",
-        "description": "Case for attaching a portable SSD to my phone.",
         "images": [
           "/images/gallery/clampcase_1.webp",
           "/images/gallery/clampcase_2.webp",
@@ -177,7 +165,6 @@
       {
         "id": "frc-overlay-generator",
         "title": "FRC Overlay Generator",
-        "description": "Tool for analyzing official match recordings to generate a custom video overlay.",
         "images": [
           "/images/gallery/overlay_1.webp",
           "/images/gallery/overlay_2.webp",
@@ -195,7 +182,6 @@
       {
         "id": "shorts-info-card-generator",
         "title": "Shorts Info Card Generator",
-        "description": "Tool for generating FRC team info cards for Short form videos.",
         "images": [
           "/images/gallery/cardgenerator.webp"
         ],

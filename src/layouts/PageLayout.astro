@@ -1,8 +1,9 @@
 ---
 import SiteHeader from '../components/SiteHeader.astro';
 import '../styles/global.css';
-interface Props { title?: string; description?: string; section?: string; pageClass?: string; }
-const { title = 'Michael Aguilar', description = 'Michael Aguilar’s projects and FRC notes.', section = '', pageClass = '' } = Astro.props;
+import '../styles/external-links.css';
+interface Props { title?: string; description?: string; section?: string; pageClass?: string; backHref?: string; backLabel?: string; }
+const { title = 'Michael Aguilar', description = 'Michael Aguilar’s projects and FRC notes.', section = '', pageClass = '', backHref, backLabel } = Astro.props;
 const canonical = new URL(Astro.url.pathname === '/404/' ? '/404.html' : Astro.url.pathname, Astro.site);
 ---
 <!doctype html>
@@ -21,8 +22,7 @@ const canonical = new URL(Astro.url.pathname === '/404/' ? '/404.html' : Astro.u
   </head>
   <body class={pageClass}>
     <a class="skip-link" href="#main-content">Skip to content</a>
-    <SiteHeader activeSection={section} />
+    {section !== 'home' && <SiteHeader backHref={backHref} backLabel={backLabel} />}
     <main id="main-content"><slot /></main>
-    <footer class="site-footer page-width-wide"><a href="/">Michael Aguilar</a><a href="mailto:michael.b.aguilar@gmail.com">Email ↗</a></footer>
   </body>
 </html>

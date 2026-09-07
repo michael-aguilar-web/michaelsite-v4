@@ -10,5 +10,6 @@ export default defineConfig({
     '/gallery-frc': '/gallery/frc/',
     '/gallery-3dp': '/gallery/3d-prints/',
     '/gallery-apps': '/gallery/apps/',
+    '/wiki/mechanisms': '/wiki/',
   },
 });

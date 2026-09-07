@@ -38,9 +38,18 @@ for (const [file, html] of pages) {
     }
   }
   for (const match of html.matchAll(/<img\b[^>]*>/g)) {
-    if (!/\balt="/.test(match[0])) errors.push(`${sourcePath}: image without alternative text`);
+    if (!/\salt(?:=|\s|\/?>)/.test(match[0])) errors.push(`${sourcePath}: image without alternative text`);
+    const imageSrc = match[0].match(/\bsrc="([^"]+)"/)?.[1];
+    const preservedAnimation = /\/(?:BEAN25_2|BEAN26_2|clampcase_2|poopchute_2)\.webp$/.test(imageSrc || '');
+    if (imageSrc?.startsWith('/') && !imageSrc.startsWith('/_astro/') && !preservedAnimation) {
+      errors.push(`${sourcePath}: local static image bypasses Astro optimization: ${imageSrc}`);
+    }
+    for (const candidate of (match[0].match(/\bsrcset="([^"]+)"/)?.[1] || '').split(',')) {
+      const url = candidate.trim().split(/\s+/)[0];
+      if (url?.startsWith('/') && !paths.has(resolve(output, '.' + url))) errors.push(`${sourcePath}: missing responsive image ${url}`);
+    }
   }
-  if (sourcePath.startsWith('/wiki/')) {
+  if (sourcePath.startsWith('/wiki/') && !html.includes('http-equiv="refresh"')) {
     if (!html.includes('name="robots" content="noindex, nofollow"')) errors.push(`${sourcePath}: hidden wiki should not be indexed`);
     if (html.includes('[[')) errors.push(`${sourcePath}: unconverted Emanote link`);
   } else if (!html.includes('http-equiv="refresh"')) {
@@ -59,10 +68,11 @@ for (const category of gallery) {
     for (const link of project.links) assert.ok(html.includes(link.url.replaceAll('&', '&amp;')), `Missing project link: ${link.url}`);
   }
 }
-const expectedNotes = ['golden-rules', 'design-general', 'mechanisms', 'notable-matches', 'mechanisms/bumpers', 'mechanisms/climbers', 'mechanisms/elevators', 'mechanisms/hoppers-serializers-indexers', 'mechanisms/intakes'];
+const expectedNotes = ['golden-rules', 'design-general', 'notable-matches', 'mechanisms/bumpers', 'mechanisms/climbers', 'mechanisms/elevators', 'mechanisms/hoppers-serializers-indexers', 'mechanisms/intakes'];
 for (const slug of expectedNotes) assert.ok(pages.has(join(output, 'wiki', slug, 'index.html')), `Missing original wiki URL: ${slug}`);
 for (const slug of ['gallery-frc', 'gallery-3dp', 'gallery-apps']) assert.ok(pages.get(join(output, slug, 'index.html'))?.includes('http-equiv="refresh"'), `Missing legacy gallery redirect: ${slug}`);
 const home = pages.get(join(output, 'index.html'));
+assert.ok(pages.get(join(output, 'wiki/mechanisms/index.html'))?.includes('http-equiv="refresh"'), 'The retired mechanisms overview should redirect');
 assert.match(home, /id="wiki-link" hidden/, 'Homepage wiki entry should remain hidden');
 if (errors.length) { console.error(errors.join('\n')); process.exit(1); }
-console.log(`Checked ${htmlFiles.length} HTML pages: internal links, anchors, image files, hidden wiki, 14 projects, and 9 migrated wiki URLs.`);
+console.log(`Checked ${htmlFiles.length} HTML pages: internal links, anchors, image files, hidden wiki, 14 projects, and ${expectedNotes.length} wiki articles.`);

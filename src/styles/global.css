@@ -1,5 +1,7 @@
 :root {
   color-scheme: light;
+  --page: min(46rem, calc(100% - 2rem));
+  --page-wide: min(72rem, calc(100% - 2rem));
   --paper: #fff;
   --surface: #fff;
   --ink: #202024;
@@ -37,51 +39,36 @@ h2, h3, h4 { font-weight: 500; line-height: 1.3; }
 ::selection { color: #7f1d1d; background: #fecaca; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
 [hidden] { display: none !important; }
-.page-width { width: min(70rem, calc(100% - 4rem)); margin-inline: auto; }
-.page-width-wide { width: min(88rem, calc(100% - 5rem)); margin-inline: auto; }
-.site-header { display: flex; justify-content: space-between; align-items: center; min-height: 6.25rem; gap: 1.5rem; border-bottom: 1px solid var(--line); }
-.site-name { font: 500 1.4rem 'Outfit', sans-serif; letter-spacing: -.04em; text-decoration: none; }
+.page-width { width: var(--page); margin-inline: auto; }
+.page-width-wide { width: var(--page-wide); margin-inline: auto; }
+.site-header { display: flex; justify-content: space-between; align-items: center; min-height: 5.25rem; gap: 1.5rem; border-bottom: 1px solid var(--line); }
 .name-accent, .name-dot { color: var(--accent); }
-.site-header nav { display: flex; gap: 2rem; align-items: center; }
-.site-header nav a { position: relative; display: block; padding: .75rem 0; color: var(--muted); text-decoration: none; font-size: .9rem; }
-.site-header nav a:hover, .site-header nav a[aria-current] { color: var(--ink); }
-.site-header nav a[aria-current]::after { position: absolute; bottom: .25rem; left: 0; width: 1.1rem; height: 2px; background: var(--accent); content: ''; }
-.site-footer { display: flex; justify-content: space-between; padding-block: 1.5rem; gap: 1rem; border-top: 1px solid var(--line); font-size: .875rem; color: var(--muted); }
-.site-footer a { text-decoration: none; }
-.site-footer a:hover { color: var(--accent); }
 .skip-link { position: fixed; z-index: 100; top: .5rem; left: 1rem; padding: .7rem 1rem; background: var(--surface); transform: translateY(-200%); }
 .skip-link:focus { transform: translateY(0); }
-.home-intro { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(3rem, 7vw, 7rem); align-items: center; min-height: calc(100svh - 11rem); padding-block: 5rem; }
-.home-copy h1 { font-size: clamp(4.5rem, 8.5vw, 7.7rem); margin-bottom: 2.5rem; }
 .gallery-link { display: flex; width: min(100%, 20rem); justify-content: space-between; padding-bottom: .85rem; border-bottom: 1px solid var(--accent); text-decoration: none; font-size: 1.1rem; }
-.gallery-link span { color: var(--accent); transition: transform 180ms ease; }
-.gallery-link:hover span { transform: translate(3px, -3px); }
-.social-links { display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; margin-top: 2rem; max-width: 27rem; }
-.social-links a { display: inline-flex; align-items: center; gap: .4rem; text-decoration: none; font-size: .875rem; color: var(--muted); }
-.social-links a:hover { color: var(--accent-dark); }
-.social-links img { width: 1.1rem; height: 1.1rem; object-fit: contain; }
-.portrait-frame { padding: clamp(1rem, 3vw, 2.5rem); border: 1px solid #f5d8d8; border-radius: 50%; background: radial-gradient(circle, #fff 40%, #fff6f6 100%); }
-.portrait-button { width: 100%; display: block; padding: 0; border: 0; border-radius: 50%; background: white; cursor: pointer; overflow: hidden; touch-action: manipulation; }
-.portrait-button img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; user-select: none; -webkit-touch-callout: none; }
-.home-wiki-link { display: inline-block; margin-top: 1.5rem; font-size: .9rem; color: var(--accent-dark); }
 .page-heading { margin: 3.5rem 0 2.5rem; font-size: clamp(3rem, 6vw, 4.8rem); }
 .back-link { display: inline-block; color: var(--muted); font-size: .875rem; text-decoration: none; }
 .back-link:hover { color: var(--accent); }
 @media (max-width: 700px) {
-  .page-width, .page-width-wide { width: calc(100% - 2.5rem); }
-  .site-header { min-height: 5rem; gap: 1rem; }
-  .site-name { font-size: 1.18rem; }
-  .site-header nav { gap: 1.1rem; }
-  .site-header nav a { font-size: .875rem; }
-  .home-intro { grid-template-columns: 1fr; gap: 2.5rem; padding-block: 3rem 4rem; }
-  .portrait-frame { grid-row: 1; width: min(65vw, 18rem); justify-self: center; }
-  .home-copy h1 { font-size: clamp(4rem, 15vw, 6rem); margin-bottom: 2rem; }
   .gallery-link { width: 100%; }
-  .social-links { gap: 1rem 1.25rem; }
   .page-heading { margin-block: 2.5rem 1.75rem; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; } }
-@media (max-width: 380px) {
-  .site-header { flex-wrap: wrap; padding-block: .8rem; gap: .15rem; }
-  .site-header nav { flex-basis: 100%; }
-}
+
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.site-brand { display: grid; width: 44px; height: 44px; place-items: center; }
+.site-brand img { display: block; width: 36px; height: 36px; object-fit: contain; }
+.home-intro { display: flex; min-height: 100svh; padding: 3rem 1rem; align-items: center; justify-content: center; flex-direction: column; gap: 1.75rem; }
+.portrait-button { display: block; width: 188px; padding: 6px; border: 8px solid #e5e5e5; border-radius: 50%; background: transparent; cursor: pointer; touch-action: manipulation; }
+.portrait-button img { display: block; width: 100%; border-radius: 50%; user-select: none; -webkit-touch-callout: none; }
+.home-icons { display: flex; flex-wrap: wrap; justify-content: center; gap: .8rem; }
+.icon-link { position: relative; display: grid; width: 44px; height: 44px; place-items: center; border-radius: .5rem; }
+.icon-link img { display: block; width: 28px; height: 28px; object-fit: contain; }
+.icon-link:hover, .icon-link:focus-visible { background: var(--accent-soft); }
+.icon-link::after { position: absolute; top: calc(100% + .5rem); left: 50%; transform: translateX(-50%); padding: .3rem .55rem; color: var(--ink); background: white; border: 1px solid var(--line); border-radius: .35rem; box-shadow: var(--shadow-soft); content: attr(data-label); white-space: nowrap; font-size: .875rem; opacity: 0; pointer-events: none; z-index: 2; }
+.icon-link:focus-visible::after { opacity: 1; }
+@media (hover: hover) { .icon-link:hover::after { opacity: 1; } }
+.home-wiki-slot { display: grid; place-items: center; height: 44px; }
+
+@media (max-width: 44rem) { .site-header { min-height: 4.5rem; gap: 1rem; } }

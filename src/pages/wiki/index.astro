@@ -9,7 +9,7 @@ const notes = (await getCollection('wiki')).filter((note) => !note.data.draft &&
     <p class="wiki-lead">(almost) everything I know about FRC</p>
     <p class="wiki-status">Work in progress</p>
     <ul class="wiki-index">
-      {notes.map((note) => <li><a href={`/wiki/${note.id}/`}>{note.data.title}<span aria-hidden="true">↗</span></a></li>)}
+      {notes.map((note) => <li><a href={`/wiki/${note.id}/`}>{note.data.title}</a></li>)}
     </ul>
   </article>
 </WikiLayout>

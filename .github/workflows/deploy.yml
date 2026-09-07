@@ -5,17 +5,12 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
-    inputs:
-      deploy:
-        description: 'Deploy to GitHub Pages (only after approving the domain cutover)'
-        type: boolean
-        default: false
 
 permissions:
   contents: read
 
 concurrency:
-  group: pages-${{ github.ref }}
+  group: pages-${{ github.event_name == 'pull_request' && github.ref || 'production' }}
   cancel-in-progress: false
 
 jobs:
@@ -41,7 +36,7 @@ jobs:
           path: dist
 
   deploy:
-    if: github.event_name == 'workflow_dispatch' && inputs.deploy && github.ref == 'refs/heads/main'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

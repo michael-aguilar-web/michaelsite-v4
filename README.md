@@ -43,8 +43,11 @@ npm run check:site
 ## Content and structure
 
 - `src/pages/index.astro`: homepage and hidden wiki entry. Hold the portrait for 800 ms with a mouse or touch; keyboard activation also reveals it.
-- `src/data/gallery.json`: original project titles, descriptions, photos, detail HTML, and links. Categories and project cards render from these records.
-- `public/images/gallery`: original gallery media. Smaller grid images live in `public/images/previews`.
+- `src/data/gallery.json`: original project titles, photos, detail HTML, and links. Categories and project cards render from these records.
+- `src/assets/gallery` and `src/assets/branding`: imported source images for Astro's `Image` / `getImage()` pipeline. Gallery cards and slideshows use responsive WebP variants; static modal images use WebP at up to 1920 pixels wide.
+- `src/assets/previews`: still frames for animated gallery exports. Register new animations in `src/lib/images.ts` so their modal playback stays intact. Original animated files load only when selected.
+- `public/images/gallery`: original media retained at existing URLs for compatibility. Existing `public/images/previews` URLs are also preserved; the UI now uses Astro-generated variants.
+- Externally hosted wiki images and the dynamic article lightbox keep the same plain-image fallback used by broccosite.
 - `src/data/wiki`: Markdown / MDX articles. Folder paths become `/wiki/` URLs and navigation branches automatically.
 - `src/content.config.ts`: wiki schema, consistent with broccosite-v4 (`title`, `description`, `order`, `draft`, `publishedDate`, `updatedDate`).
 - `src/lib/wiki.ts`: content-independent navigation tree builder.
@@ -72,16 +75,16 @@ The wiki stays outside public navigation. Wiki pages include `noindex, nofollow`
 
 ## Deployment
 
-GitHub Actions builds and checks pushes and pull requests using the same Pages action family as broccosite-v4. During migration, deployment is **manual only**: the workflow’s `deploy` input defaults to false.
+GitHub Actions builds and checks pushes and pull requests using the same Pages action family as broccosite-v4. Pushes to `main` and manual workflow runs deploy after the build and site checks pass. Pull requests only build and check.
 
-After approving the local site, configure this repository’s Pages source as GitHub Actions, transfer the custom domain from the v3 repository, and run the workflow with `deploy` enabled. Until then, builds do not replace the live v3 site. Automatic deployment on pushes can be enabled after the cutover.
+GitHub Pages uses GitHub Actions. The custom domain remains on v3 until the separate domain transfer. The build targets the domain root, so the temporary GitHub project URL is not a complete browsing preview before cutover. Transfer the custom domain from v3 to v4 after verifying deployment; existing root-relative URLs then work on michaelbaguilar.com.
 
 ## Migration record
 
 - Emanote source: `michael-aguilar-web/michaelsite-v3` at `b137d0271356504469828c2d59e7db28543596ab`.
 - Astro reference: `broccosite-v4` at `684206d0b7301cf20a7bda946b728072a51472dc`.
 - Migrated all 14 gallery projects and 9 wiki articles, retaining project links and original media.
-- Preserved the 9 wiki URLs. Old `/gallery-frc`, `/gallery-3dp`, and `/gallery-apps` URLs redirect to the category routes.
+- The mechanisms overview has been retired; its old URL redirects to `/wiki/`, and its five articles remain in the sidebar folder. Preserved the other 8 wiki URLs. Old `/gallery-frc`, `/gallery-3dp`, and `/gallery-apps` URLs redirect to the category routes.
 - Converted Emanote wikilinks to normal links and image width annotations to HTML image widths.
 - Replaced the mechanisms index’s `asdfasdf` placeholder and incomplete contents list with links to all existing mechanism notes. Other article wording remains intact.
 - Original externally hosted wiki images remain externally hosted.

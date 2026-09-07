@@ -1,27 +1,27 @@
 ---
+import { Image } from 'astro:assets';
+import { imageAsset } from '../lib/images';
 import PageLayout from '../layouts/PageLayout.astro';
 import { showWikiInNavigation } from '../lib/site';
 const socials = [
   { label: 'Email', href: 'mailto:michael.b.aguilar@gmail.com', icon: 'email' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/michaelbaguilar/', icon: 'linkedin' },
+  { label: 'Gallery', href: '/gallery/', icon: 'photo' },
   { label: 'YouTube', href: 'https://www.youtube.com/@michael_aguilar', icon: 'youtube' },
   { label: 'FRC Instagram', href: 'https://www.instagram.com/michael_aguilar_frc', icon: 'instagram' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/michaelbaguilar/', icon: 'linkedin' },
 ];
 ---
 <PageLayout section="home" pageClass="home-page">
-  <section class="home-intro page-width">
-    <div class="home-copy">
-      <h1>Michael<br />Aguilar<span class="name-dot">.</span></h1>
-      <a class="gallery-link" href="/gallery/">Gallery <span aria-hidden="true">↗</span></a>
-      <div class="social-links" aria-label="Social links">
-        {socials.map((social) => <a href={social.href} target={social.href.startsWith('https') ? '_blank' : undefined} rel="noopener noreferrer"><img src={`/images/${social.icon}-60.png`} width="20" height="20" alt="" />{social.label}</a>)}
-      </div>
-      <a href="/wiki/" class="home-wiki-link" id="wiki-link" hidden={!showWikiInNavigation}>Wiki <span aria-hidden="true">↗</span></a>
-    </div>
-    <div class="portrait-frame">
-      <button class="portrait-button" type="button" aria-label="Michael Aguilar — hold to reveal wiki" aria-controls="wiki-link" aria-expanded={showWikiInNavigation}>
-        <img src="/images/s3_1white_cropped.png" width="600" height="600" alt="Michael Aguilar" fetchpriority="high" draggable="false" />
-      </button>
+  <section class="home-intro">
+    <h1 class="sr-only">Michael Aguilar</h1>
+    <button class="portrait-button" type="button" aria-label="Michael Aguilar — hold to reveal wiki" aria-controls="wiki-link" aria-expanded={showWikiInNavigation}>
+      <Image src={imageAsset('branding/s3_1white_cropped.png')} width={160} height={160} layout="fixed" densities={[1, 2]} loading="eager" alt="Michael Aguilar" fetchpriority="high" draggable="false" />
+    </button>
+    <nav class="home-icons" aria-label="Links">
+      {socials.map((social) => <a class="icon-link" href={social.href} aria-label={social.label} data-label={social.label} target={social.href.startsWith('https') ? '_blank' : undefined} rel="noopener noreferrer"><Image src={imageAsset(`branding/${social.icon}-60.png`)} width={28} height={28} layout="fixed" densities={[1, 2]} loading="eager" alt="" /></a>)}
+    </nav>
+    <div class="home-wiki-slot">
+      <a href="/wiki/" class="icon-link" id="wiki-link" hidden={!showWikiInNavigation} aria-label="Wiki" data-label="Wiki"><Image src={imageAsset('branding/open-book-60.png')} width={28} height={28} layout="fixed" densities={[1, 2]} alt="" /></a>
     </div>
   </section>
 </PageLayout>
@@ -30,11 +30,44 @@ const socials = [
   const wiki = document.querySelector<HTMLAnchorElement>('#wiki-link');
   if (portrait && wiki) {
     let timer: ReturnType<typeof setTimeout>;
-    const reveal = () => { wiki.hidden = false; portrait.setAttribute('aria-expanded', 'true'); };
+    let hideTimer: ReturnType<typeof setTimeout>;
+    let hiding: Animation | undefined;
+    const scheduleHide = () => {
+      clearTimeout(hideTimer);
+      if (wiki.hidden || (window.matchMedia('(hover: hover)').matches && wiki.matches(':hover')) || document.activeElement === wiki) return;
+      hideTimer = setTimeout(() => {
+        const finish = () => { wiki.hidden = true; portrait.setAttribute('aria-expanded', 'false'); };
+        wiki.getAnimations().forEach((animation) => animation.cancel());
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) finish();
+        else {
+          hiding = wiki.animate([{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(.8)' }], { duration: 220 });
+          hiding.onfinish = finish;
+        }
+      }, 4000);
+    };
+    const reveal = () => {
+      clearTimeout(hideTimer);
+      hiding?.cancel();
+      wiki.hidden = false;
+      portrait.setAttribute('aria-expanded', 'true');
+      wiki.getAnimations().forEach((animation) => animation.cancel());
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        wiki.animate([
+          { opacity: 0, transform: 'scale(.2) rotate(-12deg)', offset: 0 },
+          { opacity: 1, transform: 'scale(1.22) rotate(6deg)', offset: .55 },
+          { transform: 'scale(.91) rotate(-2deg)', offset: .75 },
+          { transform: 'scale(1.05) rotate(1deg)', offset: .9 },
+          { opacity: 1, transform: 'scale(1) rotate(0)', offset: 1 },
+        ], { duration: 550, easing: 'cubic-bezier(.34, 1.56, .64, 1)' });
+      }
+      scheduleHide();
+    };
     const cancel = () => clearTimeout(timer);
     portrait.addEventListener('pointerdown', () => { cancel(); timer = setTimeout(reveal, 800); });
     for (const event of ['pointerup', 'pointerleave', 'pointercancel']) portrait.addEventListener(event, cancel);
     portrait.addEventListener('contextmenu', (event) => event.preventDefault());
     portrait.addEventListener('click', (event) => { if (event.detail === 0) reveal(); });
+    for (const event of ['pointerenter', 'focus', 'pointerdown']) wiki.addEventListener(event, () => { clearTimeout(hideTimer); hiding?.cancel(); });
+    for (const event of ['pointerleave', 'blur']) wiki.addEventListener(event, scheduleHide);
   }
 </script>

@@ -1,7 +1,0 @@
----
-import gallery from '../data/gallery.json';
-const { activeId } = Astro.props;
----
-<nav class="gallery-categories" aria-label="Gallery categories">
-  {gallery.map((category) => <a href={`/gallery/${category.id}/`} aria-current={activeId === category.id ? 'page' : undefined}>{category.title}</a>)}
-</nav>

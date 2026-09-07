@@ -1,16 +1,69 @@
 ---
+import { Image, getImage } from 'astro:assets';
+import { galleryPreview } from '../../lib/images';
 import PageLayout from '../../layouts/PageLayout.astro';
 import gallery from '../../data/gallery.json';
 import '../../styles/gallery.css';
+const slideshows = await Promise.all(gallery.map(async (category) => Promise.all(category.projects.map(async (project) => {
+  const image = project.images[0];
+  const optimized = await getImage({ src: galleryPreview(image), width: 960, widths: [320, 640, 960], format: 'webp' });
+  return { src: optimized.src, srcset: optimized.srcSet.attribute, width: optimized.attributes.width, height: optimized.attributes.height, alt: project.title };
+}))));
+
 ---
 <PageLayout title="Gallery — Michael Aguilar" section="gallery">
   <div class="gallery-page page-width-wide">
-    <h1 class="page-heading">Gallery<span class="name-dot">.</span></h1>
+    <h1 class="page-heading">Gallery</h1>
     <div class="category-grid">
-      {gallery.map((category) => <a class="category-card" href={`/gallery/${category.id}/`}>
-        <div class="category-image"><img src={`/images/previews/${category.projects[0].images[0].split('/').at(-1)}`} alt={category.projects[0].title} width="960" height="720" loading="eager" /></div>
-        <div class="category-caption"><h2>{category.title}</h2><span aria-hidden="true">↗</span></div>
+      {gallery.map((category, categoryIndex) => <a class="category-card" href={`/gallery/${category.id}/`}>
+        <div class="category-image" data-slideshow={JSON.stringify(slideshows[categoryIndex])}><Image src={galleryPreview(category.projects[0].images[0])} alt={category.projects[0].title} layout="full-width" widths={[320, 640, 960]} sizes="(max-width: 700px) calc(100vw - 32px), 33vw" loading={categoryIndex === 0 ? 'eager' : 'lazy'} /></div>
+        <div class="category-caption"><h2>{category.title}</h2></div>
       </a>)}
     </div>
   </div>
 </PageLayout>
+<script>
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  for (const frame of document.querySelectorAll<HTMLElement>('[data-slideshow]')) {
+    const slides: { src: string; srcset: string; width: number; height: number; alt: string }[] = JSON.parse(frame.dataset.slideshow!);
+    let active = frame.querySelector('img')!;
+    let remaining = slides.filter((slide) => slide.src !== active.getAttribute('src'));
+    let timer: ReturnType<typeof setTimeout>;
+    let visible = false;
+    let changing = false;
+    const card = frame.closest('a')!;
+    const paused = () => !visible || document.hidden || reducedMotion.matches || card.matches(':hover, :focus-within');
+    const schedule = () => {
+      clearTimeout(timer);
+      if (paused() || slides.length < 2) return;
+      timer = setTimeout(advance, 2500 + Math.random() * 4000);
+    };
+    const advance = async () => {
+      if (paused() || changing) return;
+      changing = true;
+      if (!remaining.length) remaining = slides.filter((slide) => slide.src !== active.getAttribute('src'));
+      const next = remaining.splice(Math.floor(Math.random() * remaining.length), 1)[0];
+      const incoming = active.cloneNode(false) as HTMLImageElement;
+      incoming.srcset = next.srcset; incoming.src = next.src; incoming.alt = next.alt;
+      incoming.width = next.width; incoming.height = next.height; incoming.loading = 'eager';
+      try {
+        await incoming.decode();
+        if (paused()) { remaining.push(next); return; }
+        frame.append(incoming);
+        const outgoing = active;
+        const enter = incoming.animate([{ transform: 'translateX(100%)' }, { transform: 'translateX(0)' }], { duration: 650, easing: 'ease-in-out' });
+        outgoing.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-100%)' }], { duration: 650, easing: 'ease-in-out' });
+        await enter.finished;
+        outgoing.remove(); active = incoming;
+      } catch { incoming.remove(); }
+      finally { changing = false; schedule(); }
+    };
+    new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; schedule(); }).observe(frame);
+    card.addEventListener('mouseenter', () => clearTimeout(timer));
+    card.addEventListener('mouseleave', schedule);
+    card.addEventListener('focusin', () => clearTimeout(timer));
+    card.addEventListener('focusout', schedule);
+    document.addEventListener('visibilitychange', schedule);
+    reducedMotion.addEventListener('change', schedule);
+  }
+</script>

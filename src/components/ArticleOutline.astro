@@ -1,0 +1,41 @@
+---
+interface Props { headings: { depth: number; slug: string; text: string }[]; }
+const { headings } = Astro.props;
+---
+<aside class="article-outline" data-open="false">
+  <button class="outline-toggle" type="button" aria-label="On this page" title="On this page" aria-expanded="false" aria-controls="article-outline-panel">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h1M3 12h1M3 18h1" /></svg>
+  </button>
+  <nav id="article-outline-panel" class="outline-panel" aria-label="On this page" inert aria-hidden="true">
+    <p class="outline-title">On this page</p>
+    <ul>{headings.map((heading) => <li class:list={{ 'outline-subheading': heading.depth === 3 }}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ul>
+  </nav>
+</aside>
+<script>
+  const outline = document.querySelector<HTMLElement>('.article-outline');
+  if (outline) {
+    const toggle = outline.querySelector<HTMLButtonElement>('.outline-toggle')!;
+    const panel = outline.querySelector<HTMLElement>('.outline-panel')!;
+    const isOpen = () => outline.dataset.open === 'true';
+    const setOpen = (open: boolean) => {
+      outline.dataset.open = String(open);
+      toggle.setAttribute('aria-expanded', String(open));
+      panel.inert = !open;
+      panel.setAttribute('aria-hidden', String(!open));
+    };
+    toggle.addEventListener('click', () => setOpen(!isOpen()));
+    document.addEventListener('pointerdown', (event) => {
+      if (isOpen() && !outline.contains(event.target as Node)) setOpen(false);
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && isOpen()) { setOpen(false); toggle.focus(); }
+    });
+    outline.querySelectorAll<HTMLAnchorElement>('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        setOpen(false);
+        const heading = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+        if (heading) { heading.tabIndex = -1; heading.focus({ preventScroll: true }); }
+      });
+    });
+  }
+</script>
