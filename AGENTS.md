@@ -15,7 +15,7 @@
 - Run `npm run build` and `npm run check:site` before delivery.
 - Keep article content in `src/data/wiki`, gallery data in `src/data/gallery.json`, and branding separate from wiki navigation.
 - Preserve existing public URLs through redirects when changing routes.
-- GitHub Pages deployment is manual during migration. Review locally before the live domain cutover.
+- GitHub Pages deploys automatically after checks on pushes to main, matching broccosite-v4. The custom-domain cutover is a separate step; leave v3 serving the domain until that transfer is requested.
 
 ## UI copy
 
