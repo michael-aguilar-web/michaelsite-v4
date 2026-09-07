@@ -29,8 +29,42 @@ const nodes = buildWikiTree(await getCollection('wiki'));
 <script>
   const navigation = document.querySelector<HTMLDetailsElement>('.wiki-navigation');
   const mobile = window.matchMedia('(max-width: 44rem)');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   if (navigation) {
-    navigation.open = !mobile.matches;
-    mobile.addEventListener('change', (event) => { navigation.open = !event.matches; });
+    const summary = navigation.querySelector('summary')!;
+    const tree = navigation.querySelector<HTMLElement>('.wiki-tree')!;
+    let animation: Animation | undefined;
+    let expanded = !mobile.matches;
+    const settle = () => {
+      animation?.cancel();
+      animation = undefined;
+      navigation.open = expanded;
+      navigation.style.removeProperty('height');
+      navigation.style.removeProperty('overflow');
+      tree.inert = !expanded;
+      summary.setAttribute('aria-expanded', String(expanded));
+    };
+    settle();
+    summary.addEventListener('click', (event) => {
+      if (!mobile.matches) return;
+      event.preventDefault();
+      const startHeight = navigation.getBoundingClientRect().height;
+      expanded = !expanded;
+      animation?.cancel();
+      if (reducedMotion.matches) { settle(); return; }
+      navigation.open = true;
+      navigation.style.height = 'auto';
+      const endHeight = expanded ? navigation.getBoundingClientRect().height : summary.getBoundingClientRect().height;
+      navigation.style.overflow = 'hidden';
+      tree.inert = !expanded;
+      summary.setAttribute('aria-expanded', String(expanded));
+      animation = navigation.animate(
+        [{ height: `${startHeight}px` }, { height: `${endHeight}px` }],
+        { duration: 260, easing: 'cubic-bezier(.22, .68, 0, 1)' },
+      );
+      animation.onfinish = settle;
+    });
+    mobile.addEventListener('change', () => { expanded = !mobile.matches; settle(); });
+    reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) settle(); });
   }
 </script>

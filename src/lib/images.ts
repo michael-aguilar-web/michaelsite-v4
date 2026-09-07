@@ -8,11 +8,18 @@ export function imageAsset(path: string): ImageMetadata {
   return image;
 }
 
-export const galleryImage = (path: string) => imageAsset(`gallery/${path.split('/').at(-1)}`);
-export const galleryPreview = (path: string) => isAnimatedGalleryImage(path)
-  ? imageAsset(`previews/${path.split('/').at(-1)}`)
-  : galleryImage(path);
+export function galleryFileName(path: string): string {
+  const name = path.split('/').at(-1);
+  if (!name) throw new Error(`Invalid gallery path: ${path}`);
+  return name;
+}
 
-// Keep the original animated CAD exports intact in project viewers.
+export const galleryImage = (path: string) => imageAsset(`gallery/${galleryFileName(path)}`);
+export const galleryPreview = (path: string) => isAnimatedGalleryImage(path)
+  ? imageAsset(`previews/${galleryFileName(path)}`)
+  : galleryImage(path);
+export const galleryVideoSrc = (path: string) => `/videos/gallery/${galleryFileName(path).replace('.webp', '.mp4')}`;
+
+// Animated exports use still previews for cards and MP4 playback in project viewers.
 export const animatedGalleryImages = new Set(['BEAN25_2.webp', 'BEAN26_2.webp', 'clampcase_2.webp', 'poopchute_2.webp']);
-export const isAnimatedGalleryImage = (path: string) => animatedGalleryImages.has(path.split('/').at(-1)!);
+export const isAnimatedGalleryImage = (path: string) => animatedGalleryImages.has(galleryFileName(path));

@@ -55,8 +55,8 @@
 .prose code { padding: .15rem .3rem; background: var(--accent-soft); border-radius: .2rem; font-size: .9em; }
 .prose iframe { width: 100%; aspect-ratio: 16 / 9; height: auto; border: 0; }
 @media (max-width: 44rem) {
-  .wiki-shell { width: 100%; grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
-  .wiki-sidebar { padding: .75rem 1rem; border-right: 0; border-bottom: 1px solid var(--line); }
+  .wiki-shell { width: calc(100% - 2rem); grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .wiki-sidebar { padding: .75rem 0; border-right: 0; border-bottom: 1px solid var(--line); }
   .wiki-navigation { position: static; max-height: none; padding: 0; overflow: visible; }
   .wiki-navigation > summary { display: flex; min-height: 2.6rem; padding: .5rem .7rem; align-items: center; justify-content: space-between; color: var(--ink); border: 1px solid var(--line); border-radius: .5rem; cursor: pointer; font-size: .9rem; list-style: none; }
   .wiki-navigation > summary::-webkit-details-marker { display: none; }
@@ -64,7 +64,7 @@
   .wiki-navigation[open] > summary::after { content: '−'; }
   .wiki-navigation:not([open]) > .wiki-tree { display: none; }
   .wiki-tree { margin-top: .65rem; }
-  .wiki-document, .wiki-main .content-article { width: min(100% - 2rem, 51rem); padding-top: 2rem; }
+  .wiki-document, .wiki-main .content-article { width: 100%; padding-top: 2rem; padding-inline: 0; }
   .wiki-document h1 { margin-bottom: 1rem; }
 }
 

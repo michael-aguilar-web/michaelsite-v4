@@ -2,6 +2,8 @@
 
 ## Git identity
 
+- Keep changes local. Do not commit or push unless the user explicitly requests it for those changes.
+
 - All commits and pushes must use `michael-aguilar-web`, never `michael-aguilar`.
 - Author and committer: `michael-aguilar-web <michael.b.aguilar+web@gmail.com>`.
 - Run `npm run setup:git` on a fresh checkout. This installs repository-local identity settings and tracked hooks.
@@ -9,6 +11,8 @@
 - Keep changes to Git configuration local to this repository.
 
 ## Development
+
+- Do not use computer/browser UI automation for verification unless the user explicitly requests it. Use builds and relevant code checks; the user handles visual review.
 
 - Follow broccosite-v4's Astro + MDX content-collection architecture.
 - Use `npm run dev -- --background` for a background preview; manage it with `npm run astro -- dev status`, `dev logs`, and `dev stop`.

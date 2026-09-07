@@ -23,7 +23,7 @@ for (const [file, html] of pages) {
   }
   const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
   if (ids.length !== new Set(ids).size) errors.push(`${sourcePath}: duplicate element IDs`);
-  for (const match of html.matchAll(/<(?:a|img|script|link|iframe)\b[^>]*\b(?:href|src)="([^"]+)"/g)) {
+  for (const match of html.matchAll(/<(?:a|img|video|script|link|iframe)\b[^>]*\b(?:href|src)="([^"]+)"/g)) {
     const raw = match[1].replaceAll('&amp;', '&');
     if (!raw || /^(?:mailto:|tel:|data:|javascript:)/.test(raw)) continue;
     const url = new URL(raw, new URL(sourcePath, origin));
@@ -64,7 +64,14 @@ for (const category of gallery) {
   const html = pages.get(join(output, 'gallery', category.id, 'index.html'));
   for (const project of category.projects) {
     assert.ok(html?.includes(`id="${project.id}"`), `Missing gallery project: ${project.title}`);
-    for (const image of project.images) assert.ok(paths.has(resolve(output, '.' + image)), `Missing original image: ${image}`);
+    for (const image of project.images) {
+      assert.ok(paths.has(resolve(output, '.' + image)), `Missing original image: ${image}`);
+      if (/\/(BEAN25_2|BEAN26_2|clampcase_2|poopchute_2)\.webp$/.test(image)) {
+        const video = '/videos/gallery/' + image.split('/').at(-1).replace('.webp', '.mp4');
+        assert.ok(paths.has(resolve(output, '.' + video)), `Missing gallery animation: ${video}`);
+        assert.ok(html.includes(video), `Animation is not used by its project: ${video}`);
+      }
+    }
     for (const link of project.links) assert.ok(html.includes(link.url.replaceAll('&', '&amp;')), `Missing project link: ${link.url}`);
   }
 }

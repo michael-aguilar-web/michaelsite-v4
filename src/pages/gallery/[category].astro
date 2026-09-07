@@ -1,12 +1,13 @@
 ---
-import { Image } from 'astro:assets';
-import { galleryImage, galleryPreview, isAnimatedGalleryImage } from '../../lib/images';
+import { Image, getImage } from 'astro:assets';
+import { galleryImage, galleryPreview, galleryVideoSrc, isAnimatedGalleryImage } from '../../lib/images';
 import PageLayout from '../../layouts/PageLayout.astro';
 import GalleryViewer from '../../components/GalleryViewer.astro';
 import gallery from '../../data/gallery.json';
 import '../../styles/gallery.css';
 export function getStaticPaths() { return gallery.map((category) => ({ params: { category: category.id }, props: { category } })); }
 const { category } = Astro.props;
+const posters = Object.fromEntries(await Promise.all(category.projects.flatMap(project => project.images.filter(isAnimatedGalleryImage).map(async image => [image, (await getImage({ src: galleryPreview(image), width: 960, format: 'webp' })).src]))));
 ---
 <PageLayout title={`${category.title} — Michael Aguilar`} section="gallery" backHref="/gallery/" backLabel="Gallery">
   <div class="gallery-page page-width-wide">
@@ -20,7 +21,7 @@ const { category } = Astro.props;
         <div class="project-detail" data-project-detail>
           <div class="project-media" data-project-media aria-label={`${project.title} photos`}>
             {project.images.map((image, i) => <figure>{isAnimatedGalleryImage(image)
-              ? <img src={image} width={galleryImage(image).width} height={galleryImage(image).height} alt={`${project.title} — photo ${i + 1}`} loading="lazy" decoding="async" />
+              ? <video src={galleryVideoSrc(image)} poster={posters[image]} width={galleryImage(image).width} height={galleryImage(image).height} aria-label={`${project.title} — animation ${i + 1}`} preload="none" muted loop playsinline controls />
               : <Image src={galleryImage(image)} width={Math.min(galleryImage(image).width, 1920)} format="webp" quality={90} alt={`${project.title} — photo ${i + 1}`} loading="lazy" decoding="async" />}</figure>)}
           </div>
           <div class="project-description">

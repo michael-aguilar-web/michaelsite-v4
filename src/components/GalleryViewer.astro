@@ -18,6 +18,13 @@
       slide = (index + figures.length) % figures.length;
       figures.forEach((figure, i) => {
         figure.hidden = i !== slide;
+        const video = figure.querySelector<HTMLVideoElement>('video');
+        if (video) {
+          if (i === slide) {
+            if (!video.hasAttribute('src')) { video.src = video.dataset.fullSrc!; video.load(); }
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) void video.play().catch(() => { video.controls = true; });
+          } else video.pause();
+        }
         const image = figure.querySelector<HTMLImageElement>('img');
         if (i === slide && image?.dataset.fullSrc && !image.hasAttribute('src')) image.src = image.dataset.fullSrc;
       });
@@ -35,9 +42,24 @@
       figures = Array.from(media.querySelectorAll('figure'));
       dots = [];
       status = null;
-      // Several original WebP files are large CAD animations. Fetch them only
-      // when selected, so opening a project stays inexpensive on mobile.
+      // Load only the selected image/video; hidden animations do not download or play.
       figures.forEach((figure) => {
+        const video = figure.querySelector<HTMLVideoElement>('video');
+        if (video) {
+          video.dataset.fullSrc = video.getAttribute('src')!;
+          video.removeAttribute('src');
+          video.muted = true;
+          const state = document.createElement('p');
+          state.className = 'viewer-image-status';
+          state.setAttribute('role', 'status');
+          state.textContent = 'Loading animation…';
+          figure.append(state);
+          video.addEventListener('playing', () => { state.hidden = true; });
+          video.addEventListener('loadeddata', () => { state.hidden = true; });
+          video.addEventListener('waiting', () => { state.hidden = false; state.textContent = 'Loading animation…'; });
+          video.addEventListener('error', () => { state.hidden = false; state.textContent = 'Animation could not be loaded.'; });
+          return;
+        }
         const img = figure.querySelector<HTMLImageElement>('img')!;
         img.dataset.fullSrc = img.getAttribute('src')!;
         img.removeAttribute('src');
@@ -85,21 +107,26 @@
         openProject(project);
       });
     }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) content.querySelectorAll('video').forEach(video => video.pause());
+    });
     close.addEventListener('click', () => dialog.close());
     dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
     dialog.addEventListener('close', () => {
+      content.querySelectorAll('video').forEach(video => { video.pause(); video.removeAttribute('src'); video.load(); });
       content.replaceChildren();
       document.body.classList.remove('viewer-open');
       activeProject?.querySelector<HTMLElement>('summary')?.focus();
     });
     dialog.addEventListener('keydown', (event) => {
+      if ((event.target as HTMLElement).closest('video')) return;
       if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
         event.preventDefault(); showSlide(slide + (event.key === 'ArrowRight' ? 1 : -1));
       }
     });
     content.addEventListener('touchstart', (event) => {
       const target = event.target as HTMLElement;
-      touchStart = target.closest('[data-project-media]') && !target.closest('button') ? { x: event.touches[0].clientX, y: event.touches[0].clientY } : null;
+      touchStart = target.closest('[data-project-media]') && !target.closest('button, video') ? { x: event.touches[0].clientX, y: event.touches[0].clientY } : null;
     }, { passive: true });
     content.addEventListener('touchend', (event) => {
       if (!touchStart) return;
