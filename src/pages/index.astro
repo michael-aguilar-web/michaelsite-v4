@@ -14,9 +14,18 @@ const socials = [
 <PageLayout section="home" pageClass="home-page">
   <section class="home-intro">
     <h1 class="sr-only">Michael Aguilar</h1>
+    <div class="portrait-shell">
     <button class="portrait-button" type="button" aria-label="Michael Aguilar — hold to reveal wiki" aria-controls="wiki-link" aria-expanded={showWikiInNavigation}>
       <Image src={imageAsset('branding/s3_1white_cropped.png')} width={160} height={160} layout="fixed" densities={[1, 2]} loading="eager" alt="Michael Aguilar" fetchpriority="high" draggable="false" />
     </button>
+    <!-- Raise the framing target; 78.7% preserves the camera distance of 84% at 1.70m. -->
+    <model-viewer class="avatar-viewer" src="/models/avatar.glb?v=12" alt="Michael Aguilar’s avatar. Click or press Space to show the photo. Drag or use arrow keys to rotate. Hold or press Enter to reveal wiki."
+      camera-controls disable-zoom disable-pan touch-action="pan-y" interaction-prompt="none"
+      camera-orbit="0deg 82deg 78.7%" min-camera-orbit="auto 82deg auto" max-camera-orbit="auto 82deg auto"
+      camera-target="0m 1.86m 0m" field-of-view="30deg" auto-rotate-delay="0" rotation-per-second="-22.5deg"
+      shadow-intensity="0" exposure="1" loading="eager" aria-controls="wiki-link" aria-expanded={showWikiInNavigation}>
+    </model-viewer>
+    </div>
     <nav class="home-icons" aria-label="Links">
       {socials.map((social) => <a class="icon-link" href={social.href} aria-label={social.label} data-label={social.label} target={social.href.startsWith('https') ? '_blank' : undefined} rel="noopener noreferrer"><Image src={imageAsset(`branding/${social.icon}-60.png`)} width={28} height={28} layout="fixed" densities={[1, 2]} loading="eager" alt="" /></a>)}
     </nav>
@@ -26,9 +35,70 @@ const socials = [
   </section>
 </PageLayout>
 <script>
+  import type { ModelViewerElement } from '@google/model-viewer';
+  const shell = document.querySelector<HTMLElement>('.portrait-shell');
+  const viewer = document.querySelector<ModelViewerElement>('.avatar-viewer');
   const portrait = document.querySelector<HTMLButtonElement>('.portrait-button');
   const wiki = document.querySelector<HTMLAnchorElement>('#wiki-link');
-  if (portrait && wiki) {
+  if (portrait && wiki && shell && viewer) {
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const frontOrbit = viewer.getAttribute('camera-orbit')!;
+    let visible = true;
+    let ready = false;
+    let showingPhoto = false;
+    let pointerHeld = false;
+    const resetFacing = () => {
+      // Automatic spin and dragging use separate rotations; reset both.
+      viewer.resetTurntableRotation();
+      viewer.cameraOrbit = frontOrbit;
+      viewer.jumpCameraToGoal();
+    };
+    const syncRotation = () => { viewer.autoRotate = ready && !showingPhoto && visible && !pointerHeld && !document.hidden && !motion.matches; };
+    const syncPortrait = () => {
+      const showModel = ready && !showingPhoto;
+      shell.classList.toggle('avatar-ready', showModel);
+      viewer.inert = !showModel;
+      viewer.setAttribute('aria-hidden', String(!showModel));
+      portrait.inert = showModel;
+      portrait.setAttribute('aria-hidden', String(showModel));
+      portrait.tabIndex = showModel ? -1 : 0;
+      portrait.setAttribute('aria-label', ready
+        ? 'Michael Aguilar’s photo. Click or press Space to show the 3D avatar. Hold or press Enter to reveal wiki.'
+        : 'Michael Aguilar — hold or press Enter to reveal wiki');
+      syncRotation();
+    };
+    const togglePortrait = (moveFocus = false) => {
+      if (!ready) return;
+      resetFacing();
+      showingPhoto = !showingPhoto;
+      if (!showingPhoto) viewer.autoRotateDelay = 0;
+      syncPortrait();
+      if (moveFocus) {
+        const target = showingPhoto ? portrait : viewer.shadowRoot?.querySelector<HTMLElement>('[tabindex="0"]');
+        target?.focus({ preventScroll: true });
+      }
+    };
+    const fallback = () => {
+      ready = false;
+      syncPortrait();
+    };
+    viewer.addEventListener('load', () => {
+      resetFacing();
+      ready = true;
+      syncPortrait();
+    });
+    viewer.addEventListener('error', fallback);
+    // Start immediately on load; allow a pause once the user takes control.
+    viewer.addEventListener('camera-change', (event) => {
+      if ((event as CustomEvent<{ source: string }>).detail.source === 'user-interaction') {
+        viewer.autoRotateDelay = 3000;
+      }
+    });
+    syncPortrait();
+    import('@google/model-viewer').catch(fallback);
+    motion.addEventListener('change', syncRotation);
+    document.addEventListener('visibilitychange', syncRotation);
+    new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; syncRotation(); }).observe(shell);
     let timer: ReturnType<typeof setTimeout>;
     let hideTimer: ReturnType<typeof setTimeout>;
     let hiding: Animation | undefined;
@@ -36,7 +106,7 @@ const socials = [
       clearTimeout(hideTimer);
       if (wiki.hidden || (window.matchMedia('(hover: hover)').matches && wiki.matches(':hover')) || document.activeElement === wiki) return;
       hideTimer = setTimeout(() => {
-        const finish = () => { wiki.hidden = true; portrait.setAttribute('aria-expanded', 'false'); };
+        const finish = () => { wiki.hidden = true; portrait.setAttribute('aria-expanded', 'false'); viewer.setAttribute('aria-expanded', 'false'); };
         wiki.getAnimations().forEach((animation) => animation.cancel());
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) finish();
         else {
@@ -50,6 +120,7 @@ const socials = [
       hiding?.cancel();
       wiki.hidden = false;
       portrait.setAttribute('aria-expanded', 'true');
+      viewer.setAttribute('aria-expanded', 'true');
       wiki.getAnimations().forEach((animation) => animation.cancel());
       if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         wiki.animate([
@@ -63,10 +134,43 @@ const socials = [
       scheduleHide();
     };
     const cancel = () => clearTimeout(timer);
-    portrait.addEventListener('pointerdown', () => { cancel(); timer = setTimeout(reveal, 800); });
-    for (const event of ['pointerup', 'pointerleave', 'pointercancel']) portrait.addEventListener(event, cancel);
-    portrait.addEventListener('contextmenu', (event) => event.preventDefault());
-    portrait.addEventListener('click', (event) => { if (event.detail === 0) reveal(); });
+    let start: { x: number; y: number; id: number } | undefined;
+    shell.addEventListener('pointerdown', (event) => {
+      cancel();
+      viewer.autoRotateDelay = 3000;
+      pointerHeld = true;
+      syncRotation();
+      if (!event.isPrimary || event.button !== 0) { start = undefined; return; }
+      start = { x: event.clientX, y: event.clientY, id: event.pointerId };
+      timer = setTimeout(() => { start = undefined; reveal(); }, 800);
+    }, true);
+    shell.addEventListener('pointermove', (event) => {
+      if (start && event.pointerId === start.id && Math.hypot(event.clientX - start.x, event.clientY - start.y) > 6) {
+        cancel(); start = undefined;
+      }
+    }, true);
+    shell.addEventListener('pointerup', (event) => {
+      const tapped = start && event.pointerId === start.id
+        && Math.hypot(event.clientX - start.x, event.clientY - start.y) <= 6;
+      cancel(); start = undefined;
+      if (tapped) togglePortrait();
+    }, true);
+    for (const event of ['pointerleave', 'pointercancel']) shell.addEventListener(event, () => { cancel(); start = undefined; }, true);
+    for (const event of ['pointerup', 'pointercancel', 'blur']) window.addEventListener(event, () => {
+      pointerHeld = false; cancel(); start = undefined; syncRotation();
+    });
+    shell.addEventListener('contextmenu', (event) => event.preventDefault());
+    portrait.addEventListener('click', (event) => { if (event.detail === 0) togglePortrait(true); });
+    viewer.addEventListener('click', (event) => { if (event.detail === 0) togglePortrait(true); });
+    portrait.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') { event.preventDefault(); if (!event.repeat) reveal(); }
+    });
+    viewer.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        if (!event.repeat) event.key === 'Enter' ? reveal() : togglePortrait(true);
+      }
+    });
     for (const event of ['pointerenter', 'focus', 'pointerdown']) wiki.addEventListener(event, () => { clearTimeout(hideTimer); hiding?.cancel(); });
     for (const event of ['pointerleave', 'blur']) wiki.addEventListener(event, scheduleHide);
   }

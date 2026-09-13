@@ -25,3 +25,30 @@ pnpm-debug.log*
 
 .env.*
 !.env.example
+
+# Local avatar iterations and Blender recovery copies
+artwork/avatar/.history/
+artwork/avatar/*.blend[0-9]
+artwork/avatar/avatar-v2.glb
+artwork/avatar/avatar-v3.glb
+artwork/avatar/avatar-v4.glb
+artwork/avatar/avatar-v5.glb
+artwork/avatar/avatar-v6.glb
+artwork/avatar/avatar-v7.glb
+artwork/avatar/avatar-v8.glb
+artwork/avatar/avatar-v9.glb
+artwork/avatar/avatar-v10.glb
+artwork/avatar/avatar-v11.glb
+artwork/avatar/avatar-v12.glb
+artwork/avatar/savepoints/
+__pycache__/
+
+# Keep the finished editable model and reference; generated study assets stay local.
+artwork/avatar/*.blend
+!artwork/avatar/avatar-v12.blend
+artwork/avatar/*.png
+!artwork/avatar/concept.png
+!artwork/avatar/turnaround-v12.png
+artwork/avatar/*.json
+artwork/avatar/reference-inputs/
+artwork/avatar/validation/

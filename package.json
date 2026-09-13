@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.8",
+    "@google/model-viewer": "^4.3.1",
     "astro": "^7.2.9",
     "mermaid": "^11.17.2"
   },
