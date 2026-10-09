@@ -13,4 +13,8 @@ const wiki = defineCollection({
     order: z.number().default(10),
   }),
 });
-export const collections = { wiki };
+const galleryInfo = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/data/gallery-info', retainBody: true }),
+});
+
+export const collections = { wiki, galleryInfo };

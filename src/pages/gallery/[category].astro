@@ -1,5 +1,6 @@
 ---
 import { Image, getImage } from 'astro:assets';
+import { getCollection, render } from 'astro:content';
 import { galleryImage, galleryPreview, galleryVideoSrc, isAnimatedGalleryImage } from '../../lib/images';
 import PageLayout from '../../layouts/PageLayout.astro';
 import GalleryViewer from '../../components/GalleryViewer.astro';
@@ -7,28 +8,52 @@ import gallery from '../../data/gallery.json';
 import '../../styles/gallery.css';
 export function getStaticPaths() { return gallery.map((category) => ({ params: { category: category.id }, props: { category } })); }
 const { category } = Astro.props;
+const descriptions = await getCollection('galleryInfo');
+const projectIds = new Set(gallery.flatMap(category => category.projects.map(project => project.id)));
+for (const entry of descriptions) {
+  if (!projectIds.has(entry.id)) throw new Error(`Gallery description "${entry.id}.md" has no matching project ID in src/data/gallery.json.`);
+}
+const descriptionsById = new Map(descriptions.map(entry => [entry.id, entry]));
+// A stale development collection must not silently turn written projects into photo-only entries.
+const descriptionFiles = import.meta.glob('../../data/gallery-info/*.md');
+for (const path of Object.keys(descriptionFiles)) {
+  const id = path.split('/').at(-1)!.replace(/\.md$/, '');
+  if (!descriptionsById.has(id)) {
+    throw new Error(`Gallery description "${id}.md" was not loaded. Restart the Astro development server to resync the content collection.`);
+  }
+}
+const projects = await Promise.all(category.projects.map(async project => {
+  const entry = descriptionsById.get(project.id);
+  if (entry && entry.body === undefined) throw new Error(`Gallery description "${entry.id}.md" is missing its Markdown body.`);
+  const Content = entry?.body?.trim() ? (await render(entry)).Content : null;
+  return { ...project, Content };
+}));
 const posters = Object.fromEntries(await Promise.all(category.projects.flatMap(project => project.images.filter(isAnimatedGalleryImage).map(async image => [image, (await getImage({ src: galleryPreview(image), width: 960, format: 'webp' })).src]))));
 ---
 <PageLayout title={`${category.title} — Michael Aguilar`} section="gallery" backHref="/gallery/" backLabel="Gallery">
   <div class="gallery-page page-width-wide">
     <h1 class="page-heading">{category.title}</h1>
     <div class="project-grid">
-      {category.projects.map((project, index) => <details class="project-card" id={project.id} data-project>
+      {projects.map(({ Content, ...project }, index) => <details class="project-card" id={project.id} data-project>
         <summary data-project-open>
           <div class="project-image"><Image src={galleryPreview(project.images[0])} layout="full-width" widths={[320, 640, 960]} sizes="(max-width: 700px) calc(100vw - 32px), (max-width: 1000px) 46vw, 360px" alt={project.title} loading={index < 3 ? 'eager' : 'lazy'} /></div>
           <div class="project-caption"><h2>{project.title}</h2></div>
         </summary>
-        <div class="project-detail" data-project-detail>
+        <div class:list={['project-detail', { 'project-detail--visual': !Content }]} data-project-detail>
+          {!Content && <header class="project-header">
+            <h2 data-project-title>{project.title}</h2>
+            {project.links.length > 0 && <ul class="project-links">{project.links.map((link) => <li><a href={link.url} target="_blank" rel="noopener noreferrer">{link.label}</a></li>)}</ul>}
+          </header>}
           <div class="project-media" data-project-media aria-label={`${project.title} photos`}>
             {project.images.map((image, i) => <figure>{isAnimatedGalleryImage(image)
               ? <video src={galleryVideoSrc(image)} poster={posters[image]} width={galleryImage(image).width} height={galleryImage(image).height} aria-label={`${project.title} — animation ${i + 1}`} preload="none" muted loop playsinline controls />
               : <Image src={galleryImage(image)} width={Math.min(galleryImage(image).width, 1920)} format="webp" quality={90} alt={`${project.title} — photo ${i + 1}`} loading="lazy" decoding="async" />}</figure>)}
           </div>
-          <div class="project-description">
+          {Content && <div class="project-description">
             <h2 data-project-title>{project.title}</h2>
-            {project.infoHtml && <div class="project-info" set:html={project.infoHtml} />}
+            <div class="project-info"><Content /></div>
             {project.links.length > 0 && <ul class="project-links">{project.links.map((link) => <li><a href={link.url} target="_blank" rel="noopener noreferrer">{link.label}</a></li>)}</ul>}
-          </div>
+          </div>}
         </div>
       </details>)}
     </div>

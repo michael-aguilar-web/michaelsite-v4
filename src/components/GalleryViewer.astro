@@ -14,6 +14,35 @@
     let status: HTMLElement | null = null;
     let touchStart: { x: number; y: number } | null = null;
 
+    function fitVisualProject() {
+      if (!dialog!.open || !dialog!.classList.contains('gallery-viewer--visual')) return;
+      const header = content!.querySelector<HTMLElement>('.project-header')!;
+      const media = content!.querySelector<HTMLElement>('[data-project-media]')!;
+      // Use the first image's proportions for the whole project, including other slides.
+      const first = figures[0].querySelector<HTMLImageElement | HTMLVideoElement>('img, video')!;
+      const ratio = Number(first.getAttribute('width')) / Number(first.getAttribute('height')) || 1;
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+      const mobile = window.matchMedia('(max-width: 900px)').matches;
+      const gutter = (mobile ? 1.5 : 4) * rem;
+      const maxWidth = Math.min(78 * rem, window.innerWidth - gutter);
+      const maxHeight = Math.min(46 * rem, window.innerHeight - gutter);
+      const style = getComputedStyle(media);
+      const paddingX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+      const paddingY = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+      const controlsHeight = media.querySelector('.viewer-controls')?.getBoundingClientRect().height ?? 0;
+      dialog!.style.width = `${maxWidth}px`;
+      // Remeasure wrapped titles after narrowing the modal.
+      for (let pass = 0; pass < 3; pass++) {
+        const availableHeight = Math.max(0, maxHeight - header.getBoundingClientRect().height - paddingY - controlsHeight);
+        const width = Math.min(maxWidth, Math.max(Math.min(22 * rem, maxWidth), availableHeight * ratio + paddingX));
+        dialog!.style.width = `${width}px`;
+        const imageHeight = Math.min((width - paddingX) / ratio, availableHeight);
+        media.style.height = `${imageHeight + paddingY + controlsHeight}px`;
+      }
+    }
+    window.addEventListener('resize', fitVisualProject);
+    void document.fonts.ready.then(fitVisualProject);
+
     function showSlide(index: number) {
       slide = (index + figures.length) % figures.length;
       figures.forEach((figure, i) => {
@@ -95,7 +124,11 @@
       }
       showSlide(0);
       content!.replaceChildren(clone);
+      dialog!.classList.toggle('gallery-viewer--visual', clone.classList.contains('project-detail--visual'));
+      dialog!.style.removeProperty('width');
       if (!dialog!.open) dialog!.showModal();
+      fitVisualProject();
+      content!.scrollTop = 0;
       document.body.classList.add('viewer-open');
       close!.focus();
     }

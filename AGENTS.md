@@ -18,6 +18,7 @@
 - Use `npm run dev -- --background` for a background preview; manage it with `npm run astro -- dev status`, `dev logs`, and `dev stop`.
 - Run `npm run build` and `npm run check:site` before delivery.
 - Keep article content in `src/data/wiki`, gallery data in `src/data/gallery.json`, and branding separate from wiki navigation.
+- Edit gallery descriptions in `src/data/gallery-info/<project-id>.md` using ordinary Markdown; filenames must match project IDs in `gallery.json`. No frontmatter is required. Missing or blank files use the photo-only layout. Keep titles, images, links, and ordering in `gallery.json`.
 - Preserve existing public URLs through redirects when changing routes.
 - GitHub Pages deploys automatically after checks on pushes to main, matching broccosite-v4. The custom-domain cutover is a separate step; leave v3 serving the domain until that transfer is requested.
 

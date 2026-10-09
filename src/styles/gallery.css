@@ -93,3 +93,20 @@ body.viewer-open { overflow: hidden; }
 .project-media video { display: block; width: 100%; max-height: 72svh; object-fit: contain; }
 .gallery-viewer .project-media figure:has(video) { position: relative; }
 .gallery-viewer video + .viewer-image-status { position: absolute; inset: auto 0 .5rem; padding: .5rem; background: #fffffff0; pointer-events: none; }
+
+/* Entries without a write-up use the available space for their media. */
+.project-detail--visual { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+.project-header { min-width: 0; padding: 1.5rem 4.5rem 1.5rem 1.5rem; }
+.project-header h2 { margin: 0; font: 400 clamp(1.4rem, 3vw, 1.8rem)/1.25 'Outfit', sans-serif; letter-spacing: -.025em; }
+.project-header .project-links { display: flex; flex-wrap: wrap; gap: .25rem 1.25rem; margin: .65rem 0 0; padding: 0; border: 0; }
+.gallery-viewer--visual { height: fit-content; }
+.gallery-viewer--visual [data-viewer-content], .gallery-viewer--visual .project-detail { height: auto; }
+.gallery-viewer--visual .project-media { height: auto; }
+@media (max-width: 900px) {
+  .gallery-viewer--visual { margin: auto; height: fit-content; max-height: calc(100dvh - 1.5rem); border-radius: .85rem; }
+  .gallery-viewer--visual .viewer-close { top: .75rem; right: .75rem; }
+  .project-header { padding: 1.25rem 4.25rem 1.25rem 1.25rem; }
+  .gallery-viewer .project-detail--visual .project-media { display: grid; grid-template-rows: minmax(0, 1fr) auto; min-height: 0; }
+  .gallery-viewer .project-detail--visual .project-media figure { display: grid; height: 100%; }
+  .gallery-viewer .project-detail--visual .project-media figure :is(img, video) { width: auto; height: auto; max-width: 100%; max-height: 100%; }
+}
