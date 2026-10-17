@@ -1,0 +1,36 @@
+---
+title: "principles"
+order: 2
+---
+
+- Minimizing dofs is important, but if the mechanism gets to a certain point of complexity, it might be better to just add another dof (3005 2023)
+- Handoffs are a high coordination risk medium reward type thing
+- have a mechanism do 2 tasks that require similar motions when possible (and not too complex)
+    - 2056 2016 intake + fries manipulator
+    - 2910 2022 hood climber
+    - random thought based off 1678 intake pivot from 2024 (or my mental model off it): use pivot jack shaft (one with small sprocket) as also a roller dead axle shaft for indexer/conveyor
+- think deeply whether you want to have the intake be the same side as the scoring mechanism or not, the answer is not always obvious
+    - key idea is with swerve, you want the motors to be going full send when possible, so that means not turning when possible
+- you can reduce mechanical movement with geometric elegance
+- rolly grab literally everything
+    - 2910 2025
+    - 1323 2019 hatch mech
+- Do more passive dofs
+    - 254 2025 off-season u catcher thingy
+    - 971 2024 note path where the route was determined by the elevator height (might not be remembering that correctly but check it again)
+    - 581 2026 indexer that moved up as intake went in, good concept in general but bad in this specific case because when the intake got smashed in, the indexer could jam up
+
+
+### reducing mechanical movement with geometric elegance
+- <mark>buffer spot / breakpoint for a gamepiece should be as close to the exit point of each mechanism as possible</mark>
+      - [https://youtu.be/DAxiSBVn5yg?si=iU01QHVHrZukeC4z](https://youtu.be/DAxiSBVn5yg?si=iU01QHVHrZukeC4z)
+      - ie: the cube takes too long to move from the pooper from their buffer spot when it should be closer
+
+**examples:**
+- 2056 climb alignment 2025, just hug the wall and slide no lineup effort required
+- 2019 intakes that bring piece right to a scoring posture without any elevator movement
+  - 148 / 3015
+  - same concept, 2025 118, where they can score l2/l3 without any elevator movement, only pivoting their arm (missed this in our master sketch)
+    - rush 2025 robot bad because it does the opposite, the pre-scoring pose is guaranteed one movement away from scoring pose (arm always has to twist) so the time is wasted when the elevator goes up
+- 254 amp mech hands off the note vertically but the scoring position is at an angle
+    - <a href="https://images.amplenote.com/6f070504-e871-11ed-8539-b69062a3be3e/87bef6f8-c792-47f9-b135-a613b369a6d2.png" className="article-image-link"><img src="https://images.amplenote.com/6f070504-e871-11ed-8539-b69062a3be3e/87bef6f8-c792-47f9-b135-a613b369a6d2.png" alt="FRC mechanism reference" width="563" loading="lazy" /></a>

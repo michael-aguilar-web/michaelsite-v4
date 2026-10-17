@@ -11,5 +11,7 @@ export default defineConfig({
     '/gallery-3dp': '/gallery/3d-prints/',
     '/gallery-apps': '/gallery/apps/',
     '/wiki/mechanisms': '/wiki/',
+    '/wiki/design': '/wiki/',
+    '/wiki/design-general': '/wiki/design/process/',
   },
 });
