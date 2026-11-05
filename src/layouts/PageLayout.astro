@@ -1,5 +1,6 @@
 ---
 import SiteHeader from '../components/SiteHeader.astro';
+import GoogleAnalytics from '../components/GoogleAnalytics.astro';
 import '../styles/global.css';
 import '../styles/external-links.css';
 interface Props { title?: string; description?: string; section?: string; pageClass?: string; backHref?: string; backLabel?: string; }
@@ -11,6 +12,7 @@ const canonical = new URL(Astro.url.pathname === '/404/' ? '/404.html' : Astro.u
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <GoogleAnalytics />
     <meta name="description" content={description} />
     {section === 'wiki' && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonical} />

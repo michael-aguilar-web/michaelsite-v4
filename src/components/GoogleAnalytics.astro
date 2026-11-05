@@ -1,0 +1,16 @@
+---
+// GA4 tag. Only rendered in production builds so local dev visits are not counted.
+const measurementId = 'G-D8J58TWLJ8';
+const enabled = import.meta.env.PROD;
+---
+{enabled && (
+  <>
+    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}></script>
+    <script is:inline define:vars={{ measurementId }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', measurementId);
+    </script>
+  </>
+)}
